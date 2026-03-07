@@ -54,6 +54,8 @@
 - 若命令名、流程、生成逻辑或代码行为有变更，需在同次变更中同步更新 `AGENTS.md` 与 `README.md`。
 - Codex 每次修改代码后，都必须检查并优化 `AGENTS.md` 与 `README.md`，确保规则与文档始终最新。
 - README 中命令示例必须与 Makefile 实际目标保持一致。
+- 提交推送前，必须先完成 `README.md` 更新。
+- 提交代码时，必须将 `README.md` 改动与本次代码改动一起提交。
 
 ## 仓储抽象约定
 - `repo/base_repo.go` 是通用仓储实现入口，优先复用 `BaseRepo[T, C]` 与 `NewBaseRepo[T, C]`。
