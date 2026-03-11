@@ -22,6 +22,15 @@ make gen
 GORM_GEN_DSN="<你的dsn>" make gen
 ```
 
+## 打 Tag
+
+```bash
+make tag                    # 默认从仓库根目录递归检查 go.mod 并自动打/推送 tag（含根模块）
+make tag MODULE=repo        # 从 repo 目录开始递归检查 go.mod 并打 tag
+```
+
+说明：上述命令通过 `python3 scripts/tag_release.py` 执行统一的版本计算与远程更新检测逻辑。
+
 ## 当前配置说明
 
 - 生成入口：`internal/cmd/gen/main.go`

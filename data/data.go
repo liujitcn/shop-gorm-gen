@@ -2,10 +2,9 @@ package data
 
 import (
 	"context"
-	"fmt"
 
+	databaseGorm "github.com/liujitcn/kratos-kit/database/gorm"
 	"github.com/liujitcn/shop-gorm-gen/query"
-	gormCrud "github.com/tx7do/go-crud/gorm"
 	"gorm.io/gorm"
 )
 
@@ -17,15 +16,8 @@ type Data struct {
 }
 
 // NewData .
-func NewData(c *gormCrud.Client) *Data {
+func NewData(c *databaseGorm.Client) *Data {
 	db := c.DB
-	if db == nil {
-		panic(fmt.Errorf("NewQuery need init by db"))
-	}
-	if err := registerFillCallback(db); err != nil {
-		panic(fmt.Errorf("register callbacks failed: %w", err))
-	}
-
 	d := &Data{
 		query: query.Use(db),
 		db:    db,
