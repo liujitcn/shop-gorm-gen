@@ -10,7 +10,7 @@ import (
 )
 
 func init() {
-	databaseGorm.RegisterMigrateModels([]interface{}{
+	databaseGorm.RegisterMigrateModels(
 		new(models.BaseAPI),
 		new(models.BaseArea),
 		new(models.BaseConfig),
@@ -46,7 +46,7 @@ func init() {
 		new(models.UserCart),
 		new(models.UserCollect),
 		new(models.UserStore),
-	})
+	)
 }
 
 type contextTxKey struct{}
