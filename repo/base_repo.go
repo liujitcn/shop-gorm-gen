@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
+	"strconv"
 	"strings"
 	"time"
 	"unicode"
@@ -31,6 +32,49 @@ type baseRepo[T, C any] struct {
 	model     *T
 	batchSize int
 }
+
+type QueryOperator int
+
+const (
+	EQ QueryOperator = 1
+
+	NEQ QueryOperator = 2
+	GT  QueryOperator = 3
+	GTE QueryOperator = 4
+	LT  QueryOperator = 5
+	LTE QueryOperator = 6
+
+	LIKE     QueryOperator = 7
+	ILIKE    QueryOperator = 8
+	NOT_LIKE QueryOperator = 9
+
+	IN  QueryOperator = 10
+	NIN QueryOperator = 11
+
+	IS_NULL     QueryOperator = 12
+	IS_NOT_NULL QueryOperator = 13
+
+	BETWEEN QueryOperator = 14
+	REGEXP  QueryOperator = 15
+	IREGEXP QueryOperator = 16
+
+	CONTAINS     QueryOperator = 17
+	STARTS_WITH  QueryOperator = 18
+	ENDS_WITH    QueryOperator = 19
+	ICONTAINS    QueryOperator = 20
+	ISTARTS_WITH QueryOperator = 21
+	IENDS_WITH   QueryOperator = 22
+
+	JSON_CONTAINS  QueryOperator = 23
+	ARRAY_CONTAINS QueryOperator = 24
+	EXISTS         QueryOperator = 25
+
+	SEARCH QueryOperator = 26
+	EXACT  QueryOperator = 27
+	IEXACT QueryOperator = 28
+
+	ORDER QueryOperator = 100
+)
 
 func NewBaseRepo[T, C any](
 	queryDAO func(ctx context.Context) gen.Dao,
@@ -199,9 +243,9 @@ func BuildDao(dao gen.Dao, model, condition any) (gen.Dao, error) {
 		for i := 0; i < condVal.NumField(); i++ {
 			fieldMeta := condType.Field(i)
 			tag := parseQueryTag(fieldMeta.Tag.Get("query"))
-			op := normalizeOperator(tag["type"])
+			op, ok := parseQueryOperator(tag["type"])
 			column := strings.TrimSpace(tag["column"])
-			if op == "" || column == "" {
+			if !ok || column == "" {
 				continue
 			}
 
@@ -217,7 +261,7 @@ func BuildDao(dao gen.Dao, model, condition any) (gen.Dao, error) {
 			queryFieldVal := buildQueryFieldValue(dao.TableName(), column, modelFieldVal.Type())
 
 			switch op {
-			case "order":
+			case ORDER:
 				next, ok := applyOrder(dao, queryFieldVal, condFieldVal)
 				if !ok {
 					return nil, fmt.Errorf("invalid order value for %s", column)
@@ -226,7 +270,7 @@ func BuildDao(dao gen.Dao, model, condition any) (gen.Dao, error) {
 			default:
 				expr, ok := buildConditionExpr(queryFieldVal, op, condFieldVal)
 				if !ok {
-					return nil, fmt.Errorf("invalid condition op=%s column=%s", op, column)
+					return nil, fmt.Errorf("invalid condition op=%s column=%s", queryOperatorName(op), column)
 				}
 				dao = applyWhere(dao, expr)
 			}
@@ -302,10 +346,6 @@ func buildQueryFieldValue(table, column string, modelFieldType reflect.Type) ref
 	return reflect.ValueOf(field.NewField(table, column))
 }
 
-func buildLikeValue(key string) string {
-	return fmt.Sprintf("%%%s%%", key)
-}
-
 func parseQueryTag(raw string) map[string]string {
 	result := make(map[string]string)
 	if raw == "" {
@@ -325,18 +365,146 @@ func parseQueryTag(raw string) map[string]string {
 	return result
 }
 
-func normalizeOperator(op string) string {
-	switch strings.ToLower(strings.TrimSpace(op)) {
-	case "eq", "equal":
-		return "eq"
+func parseQueryOperator(raw string) (QueryOperator, bool) {
+	op := strings.ToLower(strings.TrimSpace(raw))
+	if op == "" {
+		return 0, false
+	}
+	if num, err := strconv.Atoi(op); err == nil {
+		switch QueryOperator(num) {
+		case EQ, NEQ, GT, GTE, LT, LTE, LIKE, ILIKE, NOT_LIKE, IN, NIN, IS_NULL, IS_NOT_NULL, BETWEEN,
+			REGEXP, IREGEXP, CONTAINS, STARTS_WITH, ENDS_WITH, ICONTAINS, ISTARTS_WITH, IENDS_WITH,
+			JSON_CONTAINS, ARRAY_CONTAINS, EXISTS, SEARCH, EXACT, IEXACT, ORDER:
+			return QueryOperator(num), true
+		default:
+			return 0, false
+		}
+	}
+
+	switch op {
+	case "eq", "equal", "exact":
+		return EQ, true
+	case "iexact":
+		return IEXACT, true
+	case "neq", "ne", "not_eq":
+		return NEQ, true
+	case "gt":
+		return GT, true
+	case "gte", "ge":
+		return GTE, true
+	case "lt":
+		return LT, true
+	case "lte", "le":
+		return LTE, true
+	case "like":
+		return LIKE, true
+	case "ilike":
+		return ILIKE, true
+	case "not_like", "notlike":
+		return NOT_LIKE, true
 	case "in":
-		return "in"
-	case "contains", "like":
-		return "contains"
+		return IN, true
+	case "nin", "not_in", "notin":
+		return NIN, true
+	case "is_null", "isnull":
+		return IS_NULL, true
+	case "is_not_null", "isnotnull":
+		return IS_NOT_NULL, true
+	case "between":
+		return BETWEEN, true
+	case "regexp":
+		return REGEXP, true
+	case "iregexp":
+		return IREGEXP, true
+	case "contains":
+		return CONTAINS, true
+	case "starts_with", "startswith":
+		return STARTS_WITH, true
+	case "ends_with", "endswith":
+		return ENDS_WITH, true
+	case "icontains":
+		return ICONTAINS, true
+	case "istarts_with", "istartswith":
+		return ISTARTS_WITH, true
+	case "iends_with", "iendswith":
+		return IENDS_WITH, true
+	case "json_contains", "jsoncontains":
+		return JSON_CONTAINS, true
+	case "array_contains", "arraycontains":
+		return ARRAY_CONTAINS, true
+	case "exists":
+		return EXISTS, true
+	case "search":
+		return SEARCH, true
 	case "order", "sort":
+		return ORDER, true
+	default:
+		return 0, false
+	}
+}
+
+func queryOperatorName(op QueryOperator) string {
+	switch op {
+	case EQ:
+		return "eq"
+	case NEQ:
+		return "neq"
+	case GT:
+		return "gt"
+	case GTE:
+		return "gte"
+	case LT:
+		return "lt"
+	case LTE:
+		return "lte"
+	case LIKE:
+		return "like"
+	case ILIKE:
+		return "ilike"
+	case NOT_LIKE:
+		return "not_like"
+	case IN:
+		return "in"
+	case NIN:
+		return "nin"
+	case IS_NULL:
+		return "is_null"
+	case IS_NOT_NULL:
+		return "is_not_null"
+	case BETWEEN:
+		return "between"
+	case REGEXP:
+		return "regexp"
+	case IREGEXP:
+		return "iregexp"
+	case CONTAINS:
+		return "contains"
+	case STARTS_WITH:
+		return "starts_with"
+	case ENDS_WITH:
+		return "ends_with"
+	case ICONTAINS:
+		return "icontains"
+	case ISTARTS_WITH:
+		return "istarts_with"
+	case IENDS_WITH:
+		return "iends_with"
+	case JSON_CONTAINS:
+		return "json_contains"
+	case ARRAY_CONTAINS:
+		return "array_contains"
+	case EXISTS:
+		return "exists"
+	case SEARCH:
+		return "search"
+	case EXACT:
+		return "exact"
+	case IEXACT:
+		return "iexact"
+	case ORDER:
 		return "order"
 	default:
-		return ""
+		return "unknown"
 	}
 }
 
@@ -390,26 +558,161 @@ func toModelFieldName(column string) string {
 	return strings.Join(parts, "")
 }
 
-func buildConditionExpr(modelField reflect.Value, op string, condField reflect.Value) (reflect.Value, bool) {
+func buildConditionExpr(modelField reflect.Value, op QueryOperator, condField reflect.Value) (reflect.Value, bool) {
 	if condField.Kind() == reflect.Ptr {
 		condField = condField.Elem()
 	}
 	switch op {
-	case "eq":
+	case EQ, EXACT:
 		return callMethod(modelField, "Eq", condField)
-	case "contains":
-		if condField.Kind() != reflect.String {
+	case NEQ:
+		return callMethod(modelField, "Neq", condField)
+	case GT:
+		return callMethod(modelField, "Gt", condField)
+	case GTE:
+		return callMethod(modelField, "Gte", condField)
+	case LT:
+		return callMethod(modelField, "Lt", condField)
+	case LTE:
+		return callMethod(modelField, "Lte", condField)
+	case LIKE:
+		return callMethod(modelField, "Like", condField)
+	case ILIKE, ICONTAINS, ISTARTS_WITH, IENDS_WITH, IEXACT:
+		s, ok := toLowerString(condField)
+		if !ok {
 			return reflect.Value{}, false
 		}
-		return callMethod(modelField, "Like", reflect.ValueOf(buildLikeValue(condField.String())))
-	case "in":
+		lowerField, ok := callNoArgMethod(modelField, "Lower")
+		if !ok {
+			lowerField = modelField
+		}
+		pattern := s
+		switch op {
+		case ICONTAINS:
+			pattern = buildContainsPattern(s)
+		case ISTARTS_WITH:
+			pattern = buildStartsWithPattern(s)
+		case IENDS_WITH:
+			pattern = buildEndsWithPattern(s)
+		case ILIKE:
+		case IEXACT:
+		}
+		return callMethod(lowerField, methodNameByOperator(op), reflect.ValueOf(pattern))
+	case NOT_LIKE:
+		return callMethod(modelField, "NotLike", condField)
+	case IN:
 		if condField.Kind() != reflect.Slice && condField.Kind() != reflect.Array {
 			return reflect.Value{}, false
 		}
 		return callVariadicMethod(modelField, "In", condField)
+	case NIN:
+		if condField.Kind() != reflect.Slice && condField.Kind() != reflect.Array {
+			return reflect.Value{}, false
+		}
+		return callVariadicMethod(modelField, "NotIn", condField)
+	case IS_NULL:
+		return callNoArgMethod(modelField, "IsNull")
+	case IS_NOT_NULL:
+		return callNoArgMethod(modelField, "IsNotNull")
+	case BETWEEN:
+		return buildBetweenExpr(modelField, condField)
+	case REGEXP:
+		return callMethod(modelField, "Regexp", condField)
+	case IREGEXP:
+		s, ok := toLowerString(condField)
+		if !ok {
+			return reflect.Value{}, false
+		}
+		lowerField, ok := callNoArgMethod(modelField, "Lower")
+		if !ok {
+			lowerField = modelField
+		}
+		return callMethod(lowerField, "Regexp", reflect.ValueOf(s))
+	case CONTAINS, SEARCH, JSON_CONTAINS, ARRAY_CONTAINS:
+		s, ok := toString(condField)
+		if !ok {
+			return reflect.Value{}, false
+		}
+		return callMethod(modelField, "Like", reflect.ValueOf(buildContainsPattern(s)))
+	case STARTS_WITH:
+		s, ok := toString(condField)
+		if !ok {
+			return reflect.Value{}, false
+		}
+		return callMethod(modelField, "Like", reflect.ValueOf(buildStartsWithPattern(s)))
+	case ENDS_WITH:
+		s, ok := toString(condField)
+		if !ok {
+			return reflect.Value{}, false
+		}
+		return callMethod(modelField, "Like", reflect.ValueOf(buildEndsWithPattern(s)))
+	case EXISTS:
+		if condField.Kind() == reflect.Bool {
+			if condField.Bool() {
+				return callNoArgMethod(modelField, "IsNotNull")
+			}
+			return callNoArgMethod(modelField, "IsNull")
+		}
+		return callNoArgMethod(modelField, "IsNotNull")
 	default:
 		return reflect.Value{}, false
 	}
+}
+
+func methodNameByOperator(op QueryOperator) string {
+	switch op {
+	case ILIKE, ICONTAINS, ISTARTS_WITH, IENDS_WITH:
+		return "Like"
+	case IEXACT:
+		return "Eq"
+	default:
+		return ""
+	}
+}
+
+func buildBetweenExpr(modelField reflect.Value, condField reflect.Value) (reflect.Value, bool) {
+	if condField.Kind() != reflect.Slice && condField.Kind() != reflect.Array {
+		return reflect.Value{}, false
+	}
+	if condField.Len() != 2 {
+		return reflect.Value{}, false
+	}
+	left := condField.Index(0)
+	right := condField.Index(1)
+	return callTwoArgMethod(modelField, "Between", left, right)
+}
+
+func toString(v reflect.Value) (string, bool) {
+	if v.Kind() == reflect.Ptr {
+		if v.IsNil() {
+			return "", false
+		}
+		v = v.Elem()
+	}
+	if v.Kind() != reflect.String {
+		return "", false
+	}
+	return v.String(), true
+}
+
+func toLowerString(v reflect.Value) (string, bool) {
+	s, ok := toString(v)
+	if !ok {
+		return "", false
+	}
+	return strings.ToLower(s), true
+}
+
+func buildContainsPattern(key string) string {
+	return fmt.Sprintf("%%%s%%", key)
+}
+
+func buildStartsWithPattern(key string) string {
+	return fmt.Sprintf("%s%%", key)
+}
+
+func buildEndsWithPattern(key string) string {
+	return fmt.Sprintf("%%%s", key)
 }
 
 func applyOrder(dao gen.Dao, modelField reflect.Value, condField reflect.Value) (gen.Dao, bool) {
@@ -459,6 +762,34 @@ func callMethod(target reflect.Value, name string, arg reflect.Value) (reflect.V
 		}
 	}
 	out := method.Call([]reflect.Value{arg})
+	if len(out) == 0 {
+		return reflect.Value{}, false
+	}
+	return out[0], true
+}
+
+func callTwoArgMethod(target reflect.Value, name string, arg1 reflect.Value, arg2 reflect.Value) (reflect.Value, bool) {
+	method := target.MethodByName(name)
+	if !method.IsValid() || method.Type().NumIn() != 2 {
+		return reflect.Value{}, false
+	}
+	inType1 := method.Type().In(0)
+	if !arg1.Type().AssignableTo(inType1) {
+		if arg1.Type().ConvertibleTo(inType1) {
+			arg1 = arg1.Convert(inType1)
+		} else {
+			return reflect.Value{}, false
+		}
+	}
+	inType2 := method.Type().In(1)
+	if !arg2.Type().AssignableTo(inType2) {
+		if arg2.Type().ConvertibleTo(inType2) {
+			arg2 = arg2.Convert(inType2)
+		} else {
+			return reflect.Value{}, false
+		}
+	}
+	out := method.Call([]reflect.Value{arg1, arg2})
 	if len(out) == 0 {
 		return reflect.Value{}, false
 	}

@@ -65,7 +65,7 @@ make tag MODULE=repo        # 从 repo 目录开始递归检查 go.mod 并打 ta
 说明：
 - `baseRepo` 为包内实现（小写），业务侧通过 `NewBaseRepo` 获取 `BaseRepo` 即可。
 - `C`（Condition）通过结构体标签声明查询行为。
-- `BuildDao` 会根据 `model` 字段类型动态构建查询表达式，支持 `eq/in/contains/order` 标签解析。
+- `BuildDao` 会根据 `model` 字段类型动态构建查询表达式，支持字符串类型与枚举编号两种 `type` 写法。
 - 当未显式指定排序时，默认按 `sort ASC`；若模型不存在 `sort` 字段，则尝试按 `updated_at DESC`。
 
 ### Condition 标签规范
@@ -77,10 +77,8 @@ query:"type:eq;column:id"
 ```
 
 支持的 `type`：
-- `eq`：等值查询
-- `in`：IN 查询
-- `contains`：LIKE `%v%`
-- `order`：排序（按字段值控制升降序）
+- 字符串别名：`eq/neq/gt/gte/lt/lte/like/ilike/not_like/in/nin/is_null/is_not_null/between/regexp/iregexp/contains/starts_with/ends_with/icontains/istarts_with/iends_with/json_contains/array_contains/exists/search/exact/iexact/order`
+- 数字枚举：`1~28`（对应上面同名操作）以及 `100`（`order`）
 
 `order` 示例：
 
