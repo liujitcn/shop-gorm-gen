@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
+	"time"
 	"unicode"
 
 	"gorm.io/gen"
@@ -213,16 +214,17 @@ func BuildDao(dao gen.Dao, model, condition any) (gen.Dao, error) {
 			if !modelFieldVal.IsValid() {
 				return nil, fmt.Errorf("column %s not found on model", column)
 			}
+			queryFieldVal := buildQueryFieldValue(dao.TableName(), column, modelFieldVal.Type())
 
 			switch op {
 			case "order":
-				next, ok := applyOrder(dao, modelFieldVal, condFieldVal)
+				next, ok := applyOrder(dao, queryFieldVal, condFieldVal)
 				if !ok {
 					return nil, fmt.Errorf("invalid order value for %s", column)
 				}
 				dao = next
 			default:
-				expr, ok := buildConditionExpr(modelFieldVal, op, condFieldVal)
+				expr, ok := buildConditionExpr(queryFieldVal, op, condFieldVal)
 				if !ok {
 					return nil, fmt.Errorf("invalid condition op=%s column=%s", op, column)
 				}
@@ -238,7 +240,7 @@ func BuildDao(dao gen.Dao, model, condition any) (gen.Dao, error) {
 func applyUpdatedAtDescIfExists(dao gen.Dao, modelVal reflect.Value) gen.Dao {
 	sortField := resolveModelField(modelVal, "sort")
 	if sortField.IsValid() {
-		expr, ok := callNoArgMethod(sortField, "Asc")
+		expr, ok := callNoArgMethod(buildQueryFieldValue(dao.TableName(), "sort", sortField.Type()), "Asc")
 		if ok {
 			return applyOrderExpr(dao, expr)
 		}
@@ -248,11 +250,56 @@ func applyUpdatedAtDescIfExists(dao gen.Dao, modelVal reflect.Value) gen.Dao {
 	if !updatedAtField.IsValid() {
 		return dao
 	}
-	expr, ok := callNoArgMethod(updatedAtField, "Desc")
+	expr, ok := callNoArgMethod(buildQueryFieldValue(dao.TableName(), "updated_at", updatedAtField.Type()), "Desc")
 	if !ok {
 		return dao
 	}
 	return applyOrderExpr(dao, expr)
+}
+
+func buildQueryFieldValue(table, column string, modelFieldType reflect.Type) reflect.Value {
+	if modelFieldType.Kind() == reflect.Ptr {
+		modelFieldType = modelFieldType.Elem()
+	}
+	if modelFieldType == reflect.TypeOf(time.Time{}) {
+		return reflect.ValueOf(field.NewTime(table, column))
+	}
+
+	switch modelFieldType.Kind() {
+	case reflect.String:
+		return reflect.ValueOf(field.NewString(table, column))
+	case reflect.Int:
+		return reflect.ValueOf(field.NewInt(table, column))
+	case reflect.Int8:
+		return reflect.ValueOf(field.NewInt8(table, column))
+	case reflect.Int16:
+		return reflect.ValueOf(field.NewInt16(table, column))
+	case reflect.Int32:
+		return reflect.ValueOf(field.NewInt32(table, column))
+	case reflect.Int64:
+		return reflect.ValueOf(field.NewInt64(table, column))
+	case reflect.Uint:
+		return reflect.ValueOf(field.NewUint(table, column))
+	case reflect.Uint8:
+		return reflect.ValueOf(field.NewUint8(table, column))
+	case reflect.Uint16:
+		return reflect.ValueOf(field.NewUint16(table, column))
+	case reflect.Uint32:
+		return reflect.ValueOf(field.NewUint32(table, column))
+	case reflect.Uint64:
+		return reflect.ValueOf(field.NewUint64(table, column))
+	case reflect.Float32:
+		return reflect.ValueOf(field.NewFloat32(table, column))
+	case reflect.Float64:
+		return reflect.ValueOf(field.NewFloat64(table, column))
+	case reflect.Bool:
+		return reflect.ValueOf(field.NewBool(table, column))
+	case reflect.Slice:
+		if modelFieldType.Elem().Kind() == reflect.Uint8 {
+			return reflect.ValueOf(field.NewBytes(table, column))
+		}
+	}
+	return reflect.ValueOf(field.NewField(table, column))
 }
 
 func buildLikeValue(key string) string {
@@ -459,48 +506,20 @@ func applyWhere(dao gen.Dao, expr reflect.Value) gen.Dao {
 	if !expr.IsValid() {
 		return dao
 	}
-	where := reflect.ValueOf(dao).MethodByName("Where")
-	if !where.IsValid() || where.Type().NumIn() != 1 {
+	cond, ok := expr.Interface().(gen.Condition)
+	if !ok {
 		return dao
 	}
-	inType := where.Type().In(0)
-	if !expr.Type().AssignableTo(inType) {
-		if expr.Type().ConvertibleTo(inType) {
-			expr = expr.Convert(inType)
-		} else {
-			return dao
-		}
-	}
-	out := where.Call([]reflect.Value{expr})
-	if len(out) == 1 {
-		if next, ok := out[0].Interface().(gen.Dao); ok {
-			return next
-		}
-	}
-	return dao
+	return dao.Where(cond)
 }
 
 func applyOrderExpr(dao gen.Dao, expr reflect.Value) gen.Dao {
 	if !expr.IsValid() {
 		return dao
 	}
-	order := reflect.ValueOf(dao).MethodByName("Order")
-	if !order.IsValid() || !order.Type().IsVariadic() || order.Type().NumIn() != 1 {
+	orderExpr, ok := expr.Interface().(field.Expr)
+	if !ok {
 		return dao
 	}
-	inElemType := order.Type().In(0).Elem()
-	if !expr.Type().AssignableTo(inElemType) {
-		if expr.Type().ConvertibleTo(inElemType) {
-			expr = expr.Convert(inElemType)
-		} else {
-			return dao
-		}
-	}
-	out := order.Call([]reflect.Value{expr})
-	if len(out) == 1 {
-		if next, ok := out[0].Interface().(gen.Dao); ok {
-			return next
-		}
-	}
-	return dao
+	return dao.Order(orderExpr)
 }

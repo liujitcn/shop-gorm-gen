@@ -65,6 +65,8 @@ make tag MODULE=repo        # 从 repo 目录开始递归检查 go.mod 并打 ta
 说明：
 - `baseRepo` 为包内实现（小写），业务侧通过 `NewBaseRepo` 获取 `BaseRepo` 即可。
 - `C`（Condition）通过结构体标签声明查询行为。
+- `BuildDao` 会根据 `model` 字段类型动态构建查询表达式，支持 `eq/in/contains/order` 标签解析。
+- 当未显式指定排序时，默认按 `sort ASC`；若模型不存在 `sort` 字段，则尝试按 `updated_at DESC`。
 
 ### Condition 标签规范
 
@@ -98,7 +100,7 @@ repo := repo.NewBaseRepo[models.BaseAPI, BaseApiCondition](
     },
     func(ctx context.Context) field.Int64 { return q.BaseAPI.ID },
     func(entity *models.BaseAPI) int64 { return entity.ID },
-    func(ctx context.Context) any { return q.BaseAPI },
+    new(models.BaseAPI),
     100,
 )
 ```
