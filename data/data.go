@@ -27,7 +27,7 @@ func init() {
 		new(models.Goods),
 		new(models.GoodsCategory),
 		new(models.GoodsProp),
-		new(models.GoodsSku),
+		new(models.GoodsSKU),
 		new(models.GoodsSpec),
 		new(models.Order),
 		new(models.OrderAddress),

@@ -35,7 +35,7 @@ func Use(db *gorm.DB, opts ...gen.DOOption) *Query {
 		Goods:          newGoods(db, opts...),
 		GoodsCategory:  newGoodsCategory(db, opts...),
 		GoodsProp:      newGoodsProp(db, opts...),
-		GoodsSku:       newGoodsSku(db, opts...),
+		GoodsSKU:       newGoodsSKU(db, opts...),
 		GoodsSpec:      newGoodsSpec(db, opts...),
 		Order:          newOrder(db, opts...),
 		OrderAddress:   newOrderAddress(db, opts...),
@@ -77,7 +77,7 @@ type Query struct {
 	Goods          goods
 	GoodsCategory  goodsCategory
 	GoodsProp      goodsProp
-	GoodsSku       goodsSku
+	GoodsSKU       goodsSKU
 	GoodsSpec      goodsSpec
 	Order          order
 	OrderAddress   orderAddress
@@ -120,7 +120,7 @@ func (q *Query) clone(db *gorm.DB) *Query {
 		Goods:          q.Goods.clone(db),
 		GoodsCategory:  q.GoodsCategory.clone(db),
 		GoodsProp:      q.GoodsProp.clone(db),
-		GoodsSku:       q.GoodsSku.clone(db),
+		GoodsSKU:       q.GoodsSKU.clone(db),
 		GoodsSpec:      q.GoodsSpec.clone(db),
 		Order:          q.Order.clone(db),
 		OrderAddress:   q.OrderAddress.clone(db),
@@ -170,7 +170,7 @@ func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 		Goods:          q.Goods.replaceDB(db),
 		GoodsCategory:  q.GoodsCategory.replaceDB(db),
 		GoodsProp:      q.GoodsProp.replaceDB(db),
-		GoodsSku:       q.GoodsSku.replaceDB(db),
+		GoodsSKU:       q.GoodsSKU.replaceDB(db),
 		GoodsSpec:      q.GoodsSpec.replaceDB(db),
 		Order:          q.Order.replaceDB(db),
 		OrderAddress:   q.OrderAddress.replaceDB(db),
@@ -210,7 +210,7 @@ type queryCtx struct {
 	Goods          *goodsDo
 	GoodsCategory  *goodsCategoryDo
 	GoodsProp      *goodsPropDo
-	GoodsSku       *goodsSkuDo
+	GoodsSKU       *goodsSKUDo
 	GoodsSpec      *goodsSpecDo
 	Order          *orderDo
 	OrderAddress   *orderAddressDo
@@ -250,7 +250,7 @@ func (q *Query) WithContext(ctx context.Context) *queryCtx {
 		Goods:          q.Goods.WithContext(ctx),
 		GoodsCategory:  q.GoodsCategory.WithContext(ctx),
 		GoodsProp:      q.GoodsProp.WithContext(ctx),
-		GoodsSku:       q.GoodsSku.WithContext(ctx),
+		GoodsSKU:       q.GoodsSKU.WithContext(ctx),
 		GoodsSpec:      q.GoodsSpec.WithContext(ctx),
 		Order:          q.Order.WithContext(ctx),
 		OrderAddress:   q.OrderAddress.WithContext(ctx),

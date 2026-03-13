@@ -19,34 +19,34 @@ import (
 	"github.com/liujitcn/shop-gorm-gen/models"
 )
 
-func newGoodsSku(db *gorm.DB, opts ...gen.DOOption) goodsSku {
-	_goodsSku := goodsSku{}
+func newGoodsSKU(db *gorm.DB, opts ...gen.DOOption) goodsSKU {
+	_goodsSKU := goodsSKU{}
 
-	_goodsSku.goodsSkuDo.UseDB(db, opts...)
-	_goodsSku.goodsSkuDo.UseModel(&models.GoodsSku{})
+	_goodsSKU.goodsSKUDo.UseDB(db, opts...)
+	_goodsSKU.goodsSKUDo.UseModel(&models.GoodsSKU{})
 
-	tableName := _goodsSku.goodsSkuDo.TableName()
-	_goodsSku.ALL = field.NewAsterisk(tableName)
-	_goodsSku.ID = field.NewInt64(tableName, "id")
-	_goodsSku.GoodsID = field.NewInt64(tableName, "goods_id")
-	_goodsSku.Picture = field.NewString(tableName, "picture")
-	_goodsSku.SkuCode = field.NewString(tableName, "sku_code")
-	_goodsSku.SpecItem = field.NewString(tableName, "spec_item")
-	_goodsSku.Price = field.NewInt64(tableName, "price")
-	_goodsSku.DiscountPrice = field.NewInt64(tableName, "discount_price")
-	_goodsSku.InitSaleNum = field.NewInt64(tableName, "init_sale_num")
-	_goodsSku.RealSaleNum = field.NewInt64(tableName, "real_sale_num")
-	_goodsSku.Inventory = field.NewInt64(tableName, "inventory")
-	_goodsSku.DeletedAt = field.NewField(tableName, "deleted_at")
+	tableName := _goodsSKU.goodsSKUDo.TableName()
+	_goodsSKU.ALL = field.NewAsterisk(tableName)
+	_goodsSKU.ID = field.NewInt64(tableName, "id")
+	_goodsSKU.GoodsID = field.NewInt64(tableName, "goods_id")
+	_goodsSKU.Picture = field.NewString(tableName, "picture")
+	_goodsSKU.SkuCode = field.NewString(tableName, "sku_code")
+	_goodsSKU.SpecItem = field.NewString(tableName, "spec_item")
+	_goodsSKU.Price = field.NewInt64(tableName, "price")
+	_goodsSKU.DiscountPrice = field.NewInt64(tableName, "discount_price")
+	_goodsSKU.InitSaleNum = field.NewInt64(tableName, "init_sale_num")
+	_goodsSKU.RealSaleNum = field.NewInt64(tableName, "real_sale_num")
+	_goodsSKU.Inventory = field.NewInt64(tableName, "inventory")
+	_goodsSKU.DeletedAt = field.NewField(tableName, "deleted_at")
 
-	_goodsSku.fillFieldMap()
+	_goodsSKU.fillFieldMap()
 
-	return _goodsSku
+	return _goodsSKU
 }
 
-// goodsSku 商品SKU信息
-type goodsSku struct {
-	goodsSkuDo goodsSkuDo
+// goodsSKU 商品SKU信息
+type goodsSKU struct {
+	goodsSKUDo goodsSKUDo
 
 	ALL           field.Asterisk
 	ID            field.Int64  // 商品SKUID
@@ -64,17 +64,17 @@ type goodsSku struct {
 	fieldMap map[string]field.Expr
 }
 
-func (g goodsSku) Table(newTableName string) *goodsSku {
-	g.goodsSkuDo.UseTable(newTableName)
+func (g goodsSKU) Table(newTableName string) *goodsSKU {
+	g.goodsSKUDo.UseTable(newTableName)
 	return g.updateTableName(newTableName)
 }
 
-func (g goodsSku) As(alias string) *goodsSku {
-	g.goodsSkuDo.DO = *(g.goodsSkuDo.As(alias).(*gen.DO))
+func (g goodsSKU) As(alias string) *goodsSKU {
+	g.goodsSKUDo.DO = *(g.goodsSKUDo.As(alias).(*gen.DO))
 	return g.updateTableName(alias)
 }
 
-func (g *goodsSku) updateTableName(table string) *goodsSku {
+func (g *goodsSKU) updateTableName(table string) *goodsSKU {
 	g.ALL = field.NewAsterisk(table)
 	g.ID = field.NewInt64(table, "id")
 	g.GoodsID = field.NewInt64(table, "goods_id")
@@ -93,15 +93,15 @@ func (g *goodsSku) updateTableName(table string) *goodsSku {
 	return g
 }
 
-func (g *goodsSku) WithContext(ctx context.Context) *goodsSkuDo { return g.goodsSkuDo.WithContext(ctx) }
+func (g *goodsSKU) WithContext(ctx context.Context) *goodsSKUDo { return g.goodsSKUDo.WithContext(ctx) }
 
-func (g goodsSku) TableName() string { return g.goodsSkuDo.TableName() }
+func (g goodsSKU) TableName() string { return g.goodsSKUDo.TableName() }
 
-func (g goodsSku) Alias() string { return g.goodsSkuDo.Alias() }
+func (g goodsSKU) Alias() string { return g.goodsSKUDo.Alias() }
 
-func (g goodsSku) Columns(cols ...field.Expr) gen.Columns { return g.goodsSkuDo.Columns(cols...) }
+func (g goodsSKU) Columns(cols ...field.Expr) gen.Columns { return g.goodsSKUDo.Columns(cols...) }
 
-func (g *goodsSku) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
+func (g *goodsSKU) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := g.fieldMap[fieldName]
 	if !ok || _f == nil {
 		return nil, false
@@ -110,7 +110,7 @@ func (g *goodsSku) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	return _oe, ok
 }
 
-func (g *goodsSku) fillFieldMap() {
+func (g *goodsSKU) fillFieldMap() {
 	g.fieldMap = make(map[string]field.Expr, 11)
 	g.fieldMap["id"] = g.ID
 	g.fieldMap["goods_id"] = g.GoodsID
@@ -125,161 +125,161 @@ func (g *goodsSku) fillFieldMap() {
 	g.fieldMap["deleted_at"] = g.DeletedAt
 }
 
-func (g goodsSku) clone(db *gorm.DB) goodsSku {
-	g.goodsSkuDo.ReplaceConnPool(db.Statement.ConnPool)
+func (g goodsSKU) clone(db *gorm.DB) goodsSKU {
+	g.goodsSKUDo.ReplaceConnPool(db.Statement.ConnPool)
 	return g
 }
 
-func (g goodsSku) replaceDB(db *gorm.DB) goodsSku {
-	g.goodsSkuDo.ReplaceDB(db)
+func (g goodsSKU) replaceDB(db *gorm.DB) goodsSKU {
+	g.goodsSKUDo.ReplaceDB(db)
 	return g
 }
 
-type goodsSkuDo struct{ gen.DO }
+type goodsSKUDo struct{ gen.DO }
 
-func (g goodsSkuDo) Debug() *goodsSkuDo {
+func (g goodsSKUDo) Debug() *goodsSKUDo {
 	return g.withDO(g.DO.Debug())
 }
 
-func (g goodsSkuDo) WithContext(ctx context.Context) *goodsSkuDo {
+func (g goodsSKUDo) WithContext(ctx context.Context) *goodsSKUDo {
 	return g.withDO(g.DO.WithContext(ctx))
 }
 
-func (g goodsSkuDo) ReadDB() *goodsSkuDo {
+func (g goodsSKUDo) ReadDB() *goodsSKUDo {
 	return g.Clauses(dbresolver.Read)
 }
 
-func (g goodsSkuDo) WriteDB() *goodsSkuDo {
+func (g goodsSKUDo) WriteDB() *goodsSKUDo {
 	return g.Clauses(dbresolver.Write)
 }
 
-func (g goodsSkuDo) Session(config *gorm.Session) *goodsSkuDo {
+func (g goodsSKUDo) Session(config *gorm.Session) *goodsSKUDo {
 	return g.withDO(g.DO.Session(config))
 }
 
-func (g goodsSkuDo) Clauses(conds ...clause.Expression) *goodsSkuDo {
+func (g goodsSKUDo) Clauses(conds ...clause.Expression) *goodsSKUDo {
 	return g.withDO(g.DO.Clauses(conds...))
 }
 
-func (g goodsSkuDo) Returning(value interface{}, columns ...string) *goodsSkuDo {
+func (g goodsSKUDo) Returning(value interface{}, columns ...string) *goodsSKUDo {
 	return g.withDO(g.DO.Returning(value, columns...))
 }
 
-func (g goodsSkuDo) Not(conds ...gen.Condition) *goodsSkuDo {
+func (g goodsSKUDo) Not(conds ...gen.Condition) *goodsSKUDo {
 	return g.withDO(g.DO.Not(conds...))
 }
 
-func (g goodsSkuDo) Or(conds ...gen.Condition) *goodsSkuDo {
+func (g goodsSKUDo) Or(conds ...gen.Condition) *goodsSKUDo {
 	return g.withDO(g.DO.Or(conds...))
 }
 
-func (g goodsSkuDo) Select(conds ...field.Expr) *goodsSkuDo {
+func (g goodsSKUDo) Select(conds ...field.Expr) *goodsSKUDo {
 	return g.withDO(g.DO.Select(conds...))
 }
 
-func (g goodsSkuDo) Where(conds ...gen.Condition) *goodsSkuDo {
+func (g goodsSKUDo) Where(conds ...gen.Condition) *goodsSKUDo {
 	return g.withDO(g.DO.Where(conds...))
 }
 
-func (g goodsSkuDo) Order(conds ...field.Expr) *goodsSkuDo {
+func (g goodsSKUDo) Order(conds ...field.Expr) *goodsSKUDo {
 	return g.withDO(g.DO.Order(conds...))
 }
 
-func (g goodsSkuDo) Distinct(cols ...field.Expr) *goodsSkuDo {
+func (g goodsSKUDo) Distinct(cols ...field.Expr) *goodsSKUDo {
 	return g.withDO(g.DO.Distinct(cols...))
 }
 
-func (g goodsSkuDo) Omit(cols ...field.Expr) *goodsSkuDo {
+func (g goodsSKUDo) Omit(cols ...field.Expr) *goodsSKUDo {
 	return g.withDO(g.DO.Omit(cols...))
 }
 
-func (g goodsSkuDo) Join(table schema.Tabler, on ...field.Expr) *goodsSkuDo {
+func (g goodsSKUDo) Join(table schema.Tabler, on ...field.Expr) *goodsSKUDo {
 	return g.withDO(g.DO.Join(table, on...))
 }
 
-func (g goodsSkuDo) LeftJoin(table schema.Tabler, on ...field.Expr) *goodsSkuDo {
+func (g goodsSKUDo) LeftJoin(table schema.Tabler, on ...field.Expr) *goodsSKUDo {
 	return g.withDO(g.DO.LeftJoin(table, on...))
 }
 
-func (g goodsSkuDo) RightJoin(table schema.Tabler, on ...field.Expr) *goodsSkuDo {
+func (g goodsSKUDo) RightJoin(table schema.Tabler, on ...field.Expr) *goodsSKUDo {
 	return g.withDO(g.DO.RightJoin(table, on...))
 }
 
-func (g goodsSkuDo) Group(cols ...field.Expr) *goodsSkuDo {
+func (g goodsSKUDo) Group(cols ...field.Expr) *goodsSKUDo {
 	return g.withDO(g.DO.Group(cols...))
 }
 
-func (g goodsSkuDo) Having(conds ...gen.Condition) *goodsSkuDo {
+func (g goodsSKUDo) Having(conds ...gen.Condition) *goodsSKUDo {
 	return g.withDO(g.DO.Having(conds...))
 }
 
-func (g goodsSkuDo) Limit(limit int) *goodsSkuDo {
+func (g goodsSKUDo) Limit(limit int) *goodsSKUDo {
 	return g.withDO(g.DO.Limit(limit))
 }
 
-func (g goodsSkuDo) Offset(offset int) *goodsSkuDo {
+func (g goodsSKUDo) Offset(offset int) *goodsSKUDo {
 	return g.withDO(g.DO.Offset(offset))
 }
 
-func (g goodsSkuDo) Scopes(funcs ...func(gen.Dao) gen.Dao) *goodsSkuDo {
+func (g goodsSKUDo) Scopes(funcs ...func(gen.Dao) gen.Dao) *goodsSKUDo {
 	return g.withDO(g.DO.Scopes(funcs...))
 }
 
-func (g goodsSkuDo) Unscoped() *goodsSkuDo {
+func (g goodsSKUDo) Unscoped() *goodsSKUDo {
 	return g.withDO(g.DO.Unscoped())
 }
 
-func (g goodsSkuDo) Create(values ...*models.GoodsSku) error {
+func (g goodsSKUDo) Create(values ...*models.GoodsSKU) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return g.DO.Create(values)
 }
 
-func (g goodsSkuDo) CreateInBatches(values []*models.GoodsSku, batchSize int) error {
+func (g goodsSKUDo) CreateInBatches(values []*models.GoodsSKU, batchSize int) error {
 	return g.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (g goodsSkuDo) Save(values ...*models.GoodsSku) error {
+func (g goodsSKUDo) Save(values ...*models.GoodsSKU) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return g.DO.Save(values)
 }
 
-func (g goodsSkuDo) First() (*models.GoodsSku, error) {
+func (g goodsSKUDo) First() (*models.GoodsSKU, error) {
 	if result, err := g.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.GoodsSku), nil
+		return result.(*models.GoodsSKU), nil
 	}
 }
 
-func (g goodsSkuDo) Take() (*models.GoodsSku, error) {
+func (g goodsSKUDo) Take() (*models.GoodsSKU, error) {
 	if result, err := g.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.GoodsSku), nil
+		return result.(*models.GoodsSKU), nil
 	}
 }
 
-func (g goodsSkuDo) Last() (*models.GoodsSku, error) {
+func (g goodsSKUDo) Last() (*models.GoodsSKU, error) {
 	if result, err := g.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.GoodsSku), nil
+		return result.(*models.GoodsSKU), nil
 	}
 }
 
-func (g goodsSkuDo) Find() ([]*models.GoodsSku, error) {
+func (g goodsSKUDo) Find() ([]*models.GoodsSKU, error) {
 	result, err := g.DO.Find()
-	return result.([]*models.GoodsSku), err
+	return result.([]*models.GoodsSKU), err
 }
 
-func (g goodsSkuDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*models.GoodsSku, err error) {
-	buf := make([]*models.GoodsSku, 0, batchSize)
+func (g goodsSKUDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*models.GoodsSKU, err error) {
+	buf := make([]*models.GoodsSKU, 0, batchSize)
 	err = g.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -287,49 +287,49 @@ func (g goodsSkuDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) er
 	return results, err
 }
 
-func (g goodsSkuDo) FindInBatches(result *[]*models.GoodsSku, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (g goodsSKUDo) FindInBatches(result *[]*models.GoodsSKU, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return g.DO.FindInBatches(result, batchSize, fc)
 }
 
-func (g goodsSkuDo) Attrs(attrs ...field.AssignExpr) *goodsSkuDo {
+func (g goodsSKUDo) Attrs(attrs ...field.AssignExpr) *goodsSKUDo {
 	return g.withDO(g.DO.Attrs(attrs...))
 }
 
-func (g goodsSkuDo) Assign(attrs ...field.AssignExpr) *goodsSkuDo {
+func (g goodsSKUDo) Assign(attrs ...field.AssignExpr) *goodsSKUDo {
 	return g.withDO(g.DO.Assign(attrs...))
 }
 
-func (g goodsSkuDo) Joins(fields ...field.RelationField) *goodsSkuDo {
+func (g goodsSKUDo) Joins(fields ...field.RelationField) *goodsSKUDo {
 	for _, _f := range fields {
 		g = *g.withDO(g.DO.Joins(_f))
 	}
 	return &g
 }
 
-func (g goodsSkuDo) Preload(fields ...field.RelationField) *goodsSkuDo {
+func (g goodsSKUDo) Preload(fields ...field.RelationField) *goodsSKUDo {
 	for _, _f := range fields {
 		g = *g.withDO(g.DO.Preload(_f))
 	}
 	return &g
 }
 
-func (g goodsSkuDo) FirstOrInit() (*models.GoodsSku, error) {
+func (g goodsSKUDo) FirstOrInit() (*models.GoodsSKU, error) {
 	if result, err := g.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.GoodsSku), nil
+		return result.(*models.GoodsSKU), nil
 	}
 }
 
-func (g goodsSkuDo) FirstOrCreate() (*models.GoodsSku, error) {
+func (g goodsSKUDo) FirstOrCreate() (*models.GoodsSKU, error) {
 	if result, err := g.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.GoodsSku), nil
+		return result.(*models.GoodsSKU), nil
 	}
 }
 
-func (g goodsSkuDo) FindByPage(offset int, limit int) (result []*models.GoodsSku, count int64, err error) {
+func (g goodsSKUDo) FindByPage(offset int, limit int) (result []*models.GoodsSKU, count int64, err error) {
 	result, err = g.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -344,7 +344,7 @@ func (g goodsSkuDo) FindByPage(offset int, limit int) (result []*models.GoodsSku
 	return
 }
 
-func (g goodsSkuDo) ScanByPage(result interface{}, offset int, limit int) (count int64, err error) {
+func (g goodsSKUDo) ScanByPage(result interface{}, offset int, limit int) (count int64, err error) {
 	count, err = g.Count()
 	if err != nil {
 		return
@@ -354,15 +354,15 @@ func (g goodsSkuDo) ScanByPage(result interface{}, offset int, limit int) (count
 	return
 }
 
-func (g goodsSkuDo) Scan(result interface{}) (err error) {
+func (g goodsSKUDo) Scan(result interface{}) (err error) {
 	return g.DO.Scan(result)
 }
 
-func (g goodsSkuDo) Delete(models ...*models.GoodsSku) (result gen.ResultInfo, err error) {
+func (g goodsSKUDo) Delete(models ...*models.GoodsSKU) (result gen.ResultInfo, err error) {
 	return g.DO.Delete(models)
 }
 
-func (g *goodsSkuDo) withDO(do gen.Dao) *goodsSkuDo {
+func (g *goodsSKUDo) withDO(do gen.Dao) *goodsSKUDo {
 	g.DO = *do.(*gen.DO)
 	return g
 }

@@ -16,11 +16,10 @@ make init
 make gen
 ```
 
-如需指定数据库连接，可通过环境变量覆盖默认 DSN：
+当前生成入口在 `internal/cmd/gen/main.go`，默认使用：
 
-```bash
-GORM_GEN_DSN="<你的dsn>" make gen
-```
+- `WithDriver("mysql")`
+- `WithSource(defaultDSN)`
 
 ## 打 Tag
 
@@ -38,6 +37,7 @@ make tag MODULE=repo        # 从 repo 目录开始递归检查 go.mod 并打 ta
 - 模型包名：`models`
 - 默认会同时生成 `models` 与 `query`
 - 模型命名策略：按表名转 CamelCase，不做单数化（例如 `goods -> Goods`、`order_goods -> OrderGoods`）
+- 生成器依赖：`github.com/liujitcn/gorm-kit/gen`
 
 ## Codex 文档规则
 
@@ -55,50 +55,4 @@ make tag MODULE=repo        # 从 repo 目录开始递归检查 go.mod 并打 ta
 
 注意：默认 DSN 仅用于本地开发，建议使用 `GORM_GEN_DSN` 指向你自己的数据库后再执行生成。
 
-## 泛型仓储（repo/base_repo.go）
-
-当前仓库提供了可复用的泛型仓储接口与构造方法：
-
-- `BaseRepo[T, C]`
-- `NewBaseRepo[T, C](...)`
-
-说明：
-- `baseRepo` 为包内实现（小写），业务侧通过 `NewBaseRepo` 获取 `BaseRepo` 即可。
-- `C`（Condition）通过结构体标签声明查询行为。
-- `BuildDao` 会根据 `model` 字段类型动态构建查询表达式，支持字符串类型与枚举编号两种 `type` 写法。
-- 当未显式指定排序时，默认按 `sort ASC`；若模型不存在 `sort` 字段，则尝试按 `updated_at DESC`。
-
-### Condition 标签规范
-
-格式：
-
-```go
-query:"type:eq;column:id"
-```
-
-支持的 `type`：
-- 字符串别名：`eq/neq/gt/gte/lt/lte/like/ilike/not_like/in/nin/is_null/is_not_null/between/regexp/iregexp/contains/starts_with/ends_with/icontains/istarts_with/iends_with/json_contains/array_contains/exists/search/exact/iexact/order`
-- 数字枚举：`1~28`（对应上面同名操作）以及 `100`（`order`）
-
-`order` 示例：
-
-```go
-type BaseRoleCondition struct {
-    CodeOrder string `query:"type:order;column:code"` // "desc" 为降序，其它非空值为升序
-}
-```
-
-### 接入示例
-
-```go
-repo := repo.NewBaseRepo[models.BaseAPI, BaseApiCondition](
-    func(ctx context.Context) gen.Dao {
-        dao := q.BaseAPI.WithContext(ctx).DO
-        return &dao
-    },
-    func(ctx context.Context) field.Int64 { return q.BaseAPI.ID },
-    func(entity *models.BaseAPI) int64 { return entity.ID },
-    new(models.BaseAPI),
-    100,
-)
-```
+> 说明：仓库当前仅承担代码生成职责，不包含 `repo/base_repo.go` 相关实现。
