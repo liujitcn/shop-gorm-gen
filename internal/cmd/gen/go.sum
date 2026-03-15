@@ -27,8 +27,8 @@ github.com/jinzhu/inflection v1.0.0/go.mod h1:h+uFLlag+Qp1Va5pdKtLDYj+kHp5pxUVkr
 github.com/jinzhu/now v1.1.2/go.mod h1:d3SSVoowX0Lcu0IBviAWJpolVfI5UJVZZ7cO71lE/z8=
 github.com/jinzhu/now v1.1.5 h1:/o9tlHleP7gOFmsnYNz3RGnqzefHA47wQpKrrdTIwXQ=
 github.com/jinzhu/now v1.1.5/go.mod h1:d3SSVoowX0Lcu0IBviAWJpolVfI5UJVZZ7cO71lE/z8=
-github.com/liujitcn/gorm-kit/gen v0.0.2 h1:Sis/fKWv15hY6pBGf/xR/xC2bSK0i/kiW6yvMQeCnNA=
-github.com/liujitcn/gorm-kit/gen v0.0.2/go.mod h1:sCsbrXmLSTsMWOU6TYkGb/pUaqGT1adFFlycqPQHit4=
+github.com/liujitcn/gorm-kit/gen v0.0.4 h1:JvMXJNNyN0TuVAO8ww0abfxzEUlCYzgpw1I3bxLtc+g=
+github.com/liujitcn/gorm-kit/gen v0.0.4/go.mod h1:sCsbrXmLSTsMWOU6TYkGb/pUaqGT1adFFlycqPQHit4=
 github.com/liujitcn/kratos-kit/database/gorm/driver v0.0.6 h1:ybIdCFZP8eKIgmGX2OIouLADHKszYsSlAtIxTCEJ5wA=
 github.com/liujitcn/kratos-kit/database/gorm/driver v0.0.6/go.mod h1:G4im2NEUggOLq3CAX5otJi0LaqxedbXbhazUuaIExvM=
 github.com/liujitcn/kratos-kit/database/gorm/driver/mysql v0.0.3 h1:L42LB/1ITtnM1vTb8pvc9HcjRsvxZ6wI5XqhClnytpE=

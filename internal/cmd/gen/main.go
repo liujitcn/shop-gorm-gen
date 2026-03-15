@@ -13,7 +13,14 @@ func main() {
 		kitgen.WithDriver("mysql"),
 		kitgen.WithSource(defaultDSN),
 	)
+	tables, err := g.GenerateAllTable()
+	if err != nil {
+		log.Fatal(err)
+	}
 	if err := g.Execute(); err != nil {
+		log.Fatal(err)
+	}
+	if err := generateDataFiles(tables); err != nil {
 		log.Fatal(err)
 	}
 }
