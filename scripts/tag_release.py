@@ -42,23 +42,12 @@ def detect_remote_ref() -> str:
     return remote_ref
 
 
-def is_internal_module_dir(module_dir: str) -> bool:
-    path = Path(module_dir)
-    return "internal" in path.parts
-
-
 def module_dirs(base_dir: str = ".") -> list[str]:
     base = Path(base_dir)
     if not base.exists() or not base.is_dir():
         raise RuntimeError(f"目录不存在: {base_dir}")
 
-    paths = sorted(
-        {
-            p.parent.as_posix()
-            for p in base.rglob("go.mod")
-            if ".git" not in p.parts and "internal" not in p.parts
-        }
-    )
+    paths = sorted({p.parent.as_posix() for p in base.rglob("go.mod") if ".git" not in p.parts})
     return ["." if p == "." else p for p in paths]
 
 
@@ -96,7 +85,15 @@ def next_tag(latest: str | None, prefix: str) -> str:
         return f"{prefix}v0.0.1"
     raw = latest[len(prefix) :] if prefix else latest
     major, minor, patch = parse_semver(raw)
-    return f"{prefix}v{major}.{minor}.{patch + 1}"
+    # patch 达到 100 时向 minor 进位，minor 达到 100 时继续向 major 进位。
+    patch += 1
+    if patch >= 100:
+        minor += 1
+        patch = 0
+    if minor >= 100:
+        major += 1
+        minor = 0
+    return f"{prefix}v{major}.{minor}.{patch}"
 
 
 def has_remote_update(latest: str | None, remote_ref: str, module_dir: str) -> bool:
@@ -157,14 +154,9 @@ def resolve_target_dirs(module_path: str | None) -> list[str]:
         return module_dirs(".")
 
     target = normalize_module_dir(module_path)
-    if is_internal_module_dir(target):
-        raise RuntimeError(f"路径位于 internal 目录，已按规则跳过: {target}")
     targets = module_dirs(target)
     if not targets:
         raise RuntimeError(f"目录及其子目录不存在 go.mod: {target}")
-    targets = [d for d in targets if not is_internal_module_dir(d)]
-    if not targets:
-        raise RuntimeError(f"目录及其子目录仅包含 internal 模块，已全部跳过: {target}")
     return targets
 
 
@@ -185,9 +177,6 @@ def main() -> int:
 
         pushed = False
         for d in targets:
-            if is_internal_module_dir(d):
-                print(f"{d} => internal 模块，跳过。")
-                continue
             if process_module(d, remote_ref):
                 pushed = True
         if not pushed:
