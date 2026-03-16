@@ -22,11 +22,11 @@ func NewShopHotGoodsRepo(data *Data) *ShopHotGoodsRepo {
 			return new(data.Query(ctx).ShopHotGoods.WithContext(ctx).DO)
 		},
 		func(ctx context.Context) field.Int64 {
-			// 当前通用 BaseRepo 仅支持单个 int64 主键，这里先复用 HotItemID 以保持生成代码可编译。
+			// 联合主键场景默认使用第一个 int64 类型的主键字段。
 			return data.Query(ctx).ShopHotGoods.HotItemID
 		},
 		func(entity *models.ShopHotGoods) int64 {
-			// 联合主键场景下无法完整表达，这里返回 HotItemID 作为兼容值。
+			// 联合主键场景默认使用实体上的第一个 int64 类型主键字段值。
 			return entity.HotItemID
 		},
 	)
