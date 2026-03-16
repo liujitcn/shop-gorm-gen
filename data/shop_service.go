@@ -1,0 +1,37 @@
+package data
+
+import (
+	"context"
+
+	baseRepo "github.com/liujitcn/gorm-kit/repo"
+	"github.com/liujitcn/shop-gorm-gen/models"
+	"gorm.io/gen"
+	"gorm.io/gen/field"
+)
+
+// ShopServiceRepo 定义 ShopService 的基础仓储能力。
+type ShopServiceRepo interface {
+	baseRepo.BaseRepo[models.ShopService]
+}
+
+type shopServiceRepo struct {
+	baseRepo.BaseRepo[models.ShopService]
+}
+
+// NewShopServiceRepo 创建 ShopService 基础仓储实例。
+func NewShopServiceRepo(data *Data) ShopServiceRepo {
+	base := baseRepo.NewBaseRepo[models.ShopService](
+		func(ctx context.Context) gen.Dao {
+			return new(data.Query(ctx).ShopService.WithContext(ctx).DO)
+		},
+		func(ctx context.Context) field.Int64 {
+			return data.Query(ctx).ShopService.ID
+		},
+		func(entity *models.ShopService) int64 {
+			return entity.ID
+		},
+	)
+	return &shopServiceRepo{
+		BaseRepo: base,
+	}
+}

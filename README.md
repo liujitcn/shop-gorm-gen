@@ -1,25 +1,53 @@
 # shop-gorm-gen
 
-用于根据数据库表结构自动生成 GORM 的 `models` 和 `query` 代码。
+用于根据数据库表结构自动生成 GORM 的 `models`、`query` 和 `data` 代码。
 
 ## 生成方式
 
-1. 准备依赖：
+1. 安装生成工具：
 
 ```bash
-make init
+make cli
 ```
 
-2. 在项目目录执行生成：
+说明：`make cli` 会执行 `go install github.com/liujitcn/gorm-kit/gen@latest`，将 `gen` 安装到你的 `GOBIN` 或 `$(go env GOPATH)/bin`。
+
+2. 在项目根目录准备 `config.yaml`：
+
+```yaml
+driver: mysql
+source: root:112233@tcp(127.0.0.1:3306)/shop?charset=utf8&parseTime=True&loc=Local&timeout=1000ms
+out_path: query
+model_pkg_path: models
+data_path: data
+acronyms:
+  api: API
+  sku: SKU
+```
+
+3. 在项目目录执行生成：
 
 ```bash
 make gen
 ```
 
-当前生成入口在 `internal/cmd/gen/main.go`，默认使用：
+`make gen` 的实际执行命令为：
 
-- `WithDriver("mysql")`
-- `WithSource(defaultDSN)`
+```bash
+gen -config config.yaml
+```
+
+也可以直接手工执行：
+
+```bash
+gen -config ./config.yaml
+```
+
+如需覆盖配置文件中的单项字段，可追加 `-set key=value`，例如：
+
+```bash
+gen -config ./config.yaml -set out_path=query_tmp -set data_path=data_tmp
+```
 
 ## 打 Tag
 
@@ -30,12 +58,13 @@ make tag MODULE=repo        # 从 repo 目录开始递归检查 go.mod 并打 ta
 
 说明：上述命令通过 `python3 scripts/tag_release.py` 执行统一的版本计算与远程更新检测逻辑。
 
-## 当前配置说明
+## 配置说明
 
-- 生成入口：`internal/cmd/gen/main.go`
-- 输出目录：`query`
-- 模型包名：`models`
-- 默认会同时生成 `models` 与 `query`
+- 默认配置文件：`config.yaml`
+- 输出目录：`out_path`
+- 模型包目录：`model_pkg_path`
+- `data` 输出目录：`data_path`
+- 默认会同时生成 `models`、`query` 与 `data`
 - 模型命名策略：按表名转 CamelCase，不做单数化（例如 `goods -> Goods`、`order_goods -> OrderGoods`）
 - 生成器依赖：`github.com/liujitcn/gorm-kit/gen`
 
@@ -52,7 +81,8 @@ make tag MODULE=repo        # 从 repo 目录开始递归检查 go.mod 并打 ta
 - `models/*.gen.go`：数据模型代码
 - `query/*.gen.go`：查询构造与 DAO 代码
 - `query/gen.go`：查询入口
+- `data/*.go`：基础仓储代码
 
-注意：默认 DSN 仅用于本地开发，建议使用 `GORM_GEN_DSN` 指向你自己的数据库后再执行生成。
+注意：请优先在 `config.yaml` 中填写你自己的数据库连接信息后再执行生成。
 
 > 说明：仓库当前仅承担代码生成职责，不包含 `repo/base_repo.go` 相关实现。

@@ -1,0 +1,37 @@
+package data
+
+import (
+	"context"
+
+	baseRepo "github.com/liujitcn/gorm-kit/repo"
+	"github.com/liujitcn/shop-gorm-gen/models"
+	"gorm.io/gen"
+	"gorm.io/gen/field"
+)
+
+// CasbinRuleRepo 定义 CasbinRule 的基础仓储能力。
+type CasbinRuleRepo interface {
+	baseRepo.BaseRepo[models.CasbinRule]
+}
+
+type casbinRuleRepo struct {
+	baseRepo.BaseRepo[models.CasbinRule]
+}
+
+// NewCasbinRuleRepo 创建 CasbinRule 基础仓储实例。
+func NewCasbinRuleRepo(data *Data) CasbinRuleRepo {
+	base := baseRepo.NewBaseRepo[models.CasbinRule](
+		func(ctx context.Context) gen.Dao {
+			return new(data.Query(ctx).CasbinRule.WithContext(ctx).DO)
+		},
+		func(ctx context.Context) field.Int64 {
+			return data.Query(ctx).CasbinRule.ID
+		},
+		func(entity *models.CasbinRule) int64 {
+			return entity.ID
+		},
+	)
+	return &casbinRuleRepo{
+		BaseRepo: base,
+	}
+}

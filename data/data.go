@@ -6,7 +6,6 @@ import (
 	databaseGorm "github.com/liujitcn/kratos-kit/database/gorm"
 	"github.com/liujitcn/shop-gorm-gen/models"
 	"github.com/liujitcn/shop-gorm-gen/query"
-	"gorm.io/gorm"
 )
 
 func init() {
@@ -51,38 +50,45 @@ func init() {
 
 type contextTxKey struct{}
 
+var txQueryKey = contextTxKey{}
+
 type Data struct {
 	query *query.Query
-	db    *gorm.DB
 }
 
-// NewData .
+// NewData 初始化数据访问对象，并构建默认查询入口。
 func NewData(c *databaseGorm.Client) *Data {
-	db := c.DB
 	d := &Data{
-		query: query.Use(db),
-		db:    db,
+		query: query.Use(c.DB),
 	}
 	return d
 }
 
+// Transaction 定义事务执行能力，便于业务层按接口依赖。
 type Transaction interface {
 	Transaction(context.Context, func(ctx context.Context) error) error
 }
 
+// NewTransaction 创建事务执行器。
 func NewTransaction(d *Data) Transaction {
 	return d
 }
 
+// Transaction 在事务中执行传入函数，并将事务查询对象写入上下文。
 func (d *Data) Transaction(ctx context.Context, fn func(ctx context.Context) error) error {
 	return d.query.Transaction(func(tx *query.Query) error {
-		ctx = context.WithValue(ctx, contextTxKey{}, tx)
+		// 将事务态查询对象注入上下文，仓储层可透明复用当前事务。
+		ctx = context.WithValue(ctx, txQueryKey, tx)
 		return fn(ctx)
 	})
 }
 
+// Query 返回当前上下文对应的查询入口；若存在事务则优先返回事务查询对象。
 func (d *Data) Query(ctx context.Context) *query.Query {
-	tx, ok := ctx.Value(contextTxKey{}).(*query.Query)
+	if ctx == nil {
+		return d.query
+	}
+	tx, ok := ctx.Value(txQueryKey).(*query.Query)
 	if ok {
 		return tx
 	}

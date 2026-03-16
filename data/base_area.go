@@ -1,0 +1,37 @@
+package data
+
+import (
+	"context"
+
+	baseRepo "github.com/liujitcn/gorm-kit/repo"
+	"github.com/liujitcn/shop-gorm-gen/models"
+	"gorm.io/gen"
+	"gorm.io/gen/field"
+)
+
+// BaseAreaRepo 定义 BaseArea 的基础仓储能力。
+type BaseAreaRepo interface {
+	baseRepo.BaseRepo[models.BaseArea]
+}
+
+type baseAreaRepo struct {
+	baseRepo.BaseRepo[models.BaseArea]
+}
+
+// NewBaseAreaRepo 创建 BaseArea 基础仓储实例。
+func NewBaseAreaRepo(data *Data) BaseAreaRepo {
+	base := baseRepo.NewBaseRepo[models.BaseArea](
+		func(ctx context.Context) gen.Dao {
+			return new(data.Query(ctx).BaseArea.WithContext(ctx).DO)
+		},
+		func(ctx context.Context) field.Int64 {
+			return data.Query(ctx).BaseArea.ID
+		},
+		func(entity *models.BaseArea) int64 {
+			return entity.ID
+		},
+	)
+	return &baseAreaRepo{
+		BaseRepo: base,
+	}
+}

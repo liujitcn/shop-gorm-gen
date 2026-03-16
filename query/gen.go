@@ -28,7 +28,6 @@ func Use(db *gorm.DB, opts ...gen.DOOption) *Query {
 		BaseJobLog:     newBaseJobLog(db, opts...),
 		BaseLog:        newBaseLog(db, opts...),
 		BaseMenu:       newBaseMenu(db, opts...),
-		BaseMigration:  newBaseMigration(db, opts...),
 		BaseRole:       newBaseRole(db, opts...),
 		BaseUser:       newBaseUser(db, opts...),
 		CasbinRule:     newCasbinRule(db, opts...),
@@ -70,7 +69,6 @@ type Query struct {
 	BaseJobLog     baseJobLog
 	BaseLog        baseLog
 	BaseMenu       baseMenu
-	BaseMigration  baseMigration
 	BaseRole       baseRole
 	BaseUser       baseUser
 	CasbinRule     casbinRule
@@ -113,7 +111,6 @@ func (q *Query) clone(db *gorm.DB) *Query {
 		BaseJobLog:     q.BaseJobLog.clone(db),
 		BaseLog:        q.BaseLog.clone(db),
 		BaseMenu:       q.BaseMenu.clone(db),
-		BaseMigration:  q.BaseMigration.clone(db),
 		BaseRole:       q.BaseRole.clone(db),
 		BaseUser:       q.BaseUser.clone(db),
 		CasbinRule:     q.CasbinRule.clone(db),
@@ -163,7 +160,6 @@ func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 		BaseJobLog:     q.BaseJobLog.replaceDB(db),
 		BaseLog:        q.BaseLog.replaceDB(db),
 		BaseMenu:       q.BaseMenu.replaceDB(db),
-		BaseMigration:  q.BaseMigration.replaceDB(db),
 		BaseRole:       q.BaseRole.replaceDB(db),
 		BaseUser:       q.BaseUser.replaceDB(db),
 		CasbinRule:     q.CasbinRule.replaceDB(db),
@@ -203,7 +199,6 @@ type queryCtx struct {
 	BaseJobLog     *baseJobLogDo
 	BaseLog        *baseLogDo
 	BaseMenu       *baseMenuDo
-	BaseMigration  *baseMigrationDo
 	BaseRole       *baseRoleDo
 	BaseUser       *baseUserDo
 	CasbinRule     *casbinRuleDo
@@ -243,7 +238,6 @@ func (q *Query) WithContext(ctx context.Context) *queryCtx {
 		BaseJobLog:     q.BaseJobLog.WithContext(ctx),
 		BaseLog:        q.BaseLog.WithContext(ctx),
 		BaseMenu:       q.BaseMenu.WithContext(ctx),
-		BaseMigration:  q.BaseMigration.WithContext(ctx),
 		BaseRole:       q.BaseRole.WithContext(ctx),
 		BaseUser:       q.BaseUser.WithContext(ctx),
 		CasbinRule:     q.CasbinRule.WithContext(ctx),
