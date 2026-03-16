@@ -10,16 +10,13 @@ import (
 )
 
 // GoodsSkuRepo 定义 GoodsSKU 的基础仓储能力。
-type GoodsSkuRepo interface {
+type GoodsSkuRepo struct {
 	baseRepo.BaseRepo[models.GoodsSKU]
-}
-
-type goodsSkuRepo struct {
-	baseRepo.BaseRepo[models.GoodsSKU]
+	*Data
 }
 
 // NewGoodsSkuRepo 创建 GoodsSKU 基础仓储实例。
-func NewGoodsSkuRepo(data *Data) GoodsSkuRepo {
+func NewGoodsSkuRepo(data *Data) *GoodsSkuRepo {
 	base := baseRepo.NewBaseRepo[models.GoodsSKU](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).GoodsSKU.WithContext(ctx).DO)
@@ -31,7 +28,8 @@ func NewGoodsSkuRepo(data *Data) GoodsSkuRepo {
 			return entity.ID
 		},
 	)
-	return &goodsSkuRepo{
+	return &GoodsSkuRepo{
 		BaseRepo: base,
+		Data:     data,
 	}
 }

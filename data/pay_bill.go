@@ -10,16 +10,13 @@ import (
 )
 
 // PayBillRepo 定义 PayBill 的基础仓储能力。
-type PayBillRepo interface {
+type PayBillRepo struct {
 	baseRepo.BaseRepo[models.PayBill]
-}
-
-type payBillRepo struct {
-	baseRepo.BaseRepo[models.PayBill]
+	*Data
 }
 
 // NewPayBillRepo 创建 PayBill 基础仓储实例。
-func NewPayBillRepo(data *Data) PayBillRepo {
+func NewPayBillRepo(data *Data) *PayBillRepo {
 	base := baseRepo.NewBaseRepo[models.PayBill](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).PayBill.WithContext(ctx).DO)
@@ -31,7 +28,8 @@ func NewPayBillRepo(data *Data) PayBillRepo {
 			return entity.ID
 		},
 	)
-	return &payBillRepo{
+	return &PayBillRepo{
 		BaseRepo: base,
+		Data:     data,
 	}
 }

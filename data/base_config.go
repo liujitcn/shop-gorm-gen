@@ -10,16 +10,13 @@ import (
 )
 
 // BaseConfigRepo 定义 BaseConfig 的基础仓储能力。
-type BaseConfigRepo interface {
+type BaseConfigRepo struct {
 	baseRepo.BaseRepo[models.BaseConfig]
-}
-
-type baseConfigRepo struct {
-	baseRepo.BaseRepo[models.BaseConfig]
+	*Data
 }
 
 // NewBaseConfigRepo 创建 BaseConfig 基础仓储实例。
-func NewBaseConfigRepo(data *Data) BaseConfigRepo {
+func NewBaseConfigRepo(data *Data) *BaseConfigRepo {
 	base := baseRepo.NewBaseRepo[models.BaseConfig](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).BaseConfig.WithContext(ctx).DO)
@@ -31,7 +28,8 @@ func NewBaseConfigRepo(data *Data) BaseConfigRepo {
 			return entity.ID
 		},
 	)
-	return &baseConfigRepo{
+	return &BaseConfigRepo{
 		BaseRepo: base,
+		Data:     data,
 	}
 }

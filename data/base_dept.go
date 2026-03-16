@@ -10,16 +10,13 @@ import (
 )
 
 // BaseDeptRepo 定义 BaseDept 的基础仓储能力。
-type BaseDeptRepo interface {
+type BaseDeptRepo struct {
 	baseRepo.BaseRepo[models.BaseDept]
-}
-
-type baseDeptRepo struct {
-	baseRepo.BaseRepo[models.BaseDept]
+	*Data
 }
 
 // NewBaseDeptRepo 创建 BaseDept 基础仓储实例。
-func NewBaseDeptRepo(data *Data) BaseDeptRepo {
+func NewBaseDeptRepo(data *Data) *BaseDeptRepo {
 	base := baseRepo.NewBaseRepo[models.BaseDept](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).BaseDept.WithContext(ctx).DO)
@@ -31,7 +28,8 @@ func NewBaseDeptRepo(data *Data) BaseDeptRepo {
 			return entity.ID
 		},
 	)
-	return &baseDeptRepo{
+	return &BaseDeptRepo{
 		BaseRepo: base,
+		Data:     data,
 	}
 }

@@ -10,16 +10,13 @@ import (
 )
 
 // OrderGoodsRepo 定义 OrderGoods 的基础仓储能力。
-type OrderGoodsRepo interface {
+type OrderGoodsRepo struct {
 	baseRepo.BaseRepo[models.OrderGoods]
-}
-
-type orderGoodsRepo struct {
-	baseRepo.BaseRepo[models.OrderGoods]
+	*Data
 }
 
 // NewOrderGoodsRepo 创建 OrderGoods 基础仓储实例。
-func NewOrderGoodsRepo(data *Data) OrderGoodsRepo {
+func NewOrderGoodsRepo(data *Data) *OrderGoodsRepo {
 	base := baseRepo.NewBaseRepo[models.OrderGoods](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).OrderGoods.WithContext(ctx).DO)
@@ -31,7 +28,8 @@ func NewOrderGoodsRepo(data *Data) OrderGoodsRepo {
 			return entity.ID
 		},
 	)
-	return &orderGoodsRepo{
+	return &OrderGoodsRepo{
 		BaseRepo: base,
+		Data:     data,
 	}
 }

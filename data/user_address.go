@@ -10,16 +10,13 @@ import (
 )
 
 // UserAddressRepo 定义 UserAddress 的基础仓储能力。
-type UserAddressRepo interface {
+type UserAddressRepo struct {
 	baseRepo.BaseRepo[models.UserAddress]
-}
-
-type userAddressRepo struct {
-	baseRepo.BaseRepo[models.UserAddress]
+	*Data
 }
 
 // NewUserAddressRepo 创建 UserAddress 基础仓储实例。
-func NewUserAddressRepo(data *Data) UserAddressRepo {
+func NewUserAddressRepo(data *Data) *UserAddressRepo {
 	base := baseRepo.NewBaseRepo[models.UserAddress](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).UserAddress.WithContext(ctx).DO)
@@ -31,7 +28,8 @@ func NewUserAddressRepo(data *Data) UserAddressRepo {
 			return entity.ID
 		},
 	)
-	return &userAddressRepo{
+	return &UserAddressRepo{
 		BaseRepo: base,
+		Data:     data,
 	}
 }

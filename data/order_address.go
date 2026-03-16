@@ -10,16 +10,13 @@ import (
 )
 
 // OrderAddressRepo 定义 OrderAddress 的基础仓储能力。
-type OrderAddressRepo interface {
+type OrderAddressRepo struct {
 	baseRepo.BaseRepo[models.OrderAddress]
-}
-
-type orderAddressRepo struct {
-	baseRepo.BaseRepo[models.OrderAddress]
+	*Data
 }
 
 // NewOrderAddressRepo 创建 OrderAddress 基础仓储实例。
-func NewOrderAddressRepo(data *Data) OrderAddressRepo {
+func NewOrderAddressRepo(data *Data) *OrderAddressRepo {
 	base := baseRepo.NewBaseRepo[models.OrderAddress](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).OrderAddress.WithContext(ctx).DO)
@@ -31,7 +28,8 @@ func NewOrderAddressRepo(data *Data) OrderAddressRepo {
 			return entity.ID
 		},
 	)
-	return &orderAddressRepo{
+	return &OrderAddressRepo{
 		BaseRepo: base,
+		Data:     data,
 	}
 }

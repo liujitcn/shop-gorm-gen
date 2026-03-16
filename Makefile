@@ -8,7 +8,7 @@ cli:
 	@go install github.com/liujitcn/gorm-kit/gen@latest
 
 # 生成 GORM 代码
-gen: cli
+gen:
 	gen -config config.yaml
 
 # 统一打 tag：默认扫描根目录及子目录的 go.mod；可通过 MODULE=auth 指定起始目录递归扫描（不提交代码）

@@ -10,16 +10,13 @@ import (
 )
 
 // BaseUserRepo 定义 BaseUser 的基础仓储能力。
-type BaseUserRepo interface {
+type BaseUserRepo struct {
 	baseRepo.BaseRepo[models.BaseUser]
-}
-
-type baseUserRepo struct {
-	baseRepo.BaseRepo[models.BaseUser]
+	*Data
 }
 
 // NewBaseUserRepo 创建 BaseUser 基础仓储实例。
-func NewBaseUserRepo(data *Data) BaseUserRepo {
+func NewBaseUserRepo(data *Data) *BaseUserRepo {
 	base := baseRepo.NewBaseRepo[models.BaseUser](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).BaseUser.WithContext(ctx).DO)
@@ -31,7 +28,8 @@ func NewBaseUserRepo(data *Data) BaseUserRepo {
 			return entity.ID
 		},
 	)
-	return &baseUserRepo{
+	return &BaseUserRepo{
 		BaseRepo: base,
+		Data:     data,
 	}
 }

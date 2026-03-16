@@ -10,16 +10,13 @@ import (
 )
 
 // CasbinRuleRepo 定义 CasbinRule 的基础仓储能力。
-type CasbinRuleRepo interface {
+type CasbinRuleRepo struct {
 	baseRepo.BaseRepo[models.CasbinRule]
-}
-
-type casbinRuleRepo struct {
-	baseRepo.BaseRepo[models.CasbinRule]
+	*Data
 }
 
 // NewCasbinRuleRepo 创建 CasbinRule 基础仓储实例。
-func NewCasbinRuleRepo(data *Data) CasbinRuleRepo {
+func NewCasbinRuleRepo(data *Data) *CasbinRuleRepo {
 	base := baseRepo.NewBaseRepo[models.CasbinRule](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).CasbinRule.WithContext(ctx).DO)
@@ -31,7 +28,8 @@ func NewCasbinRuleRepo(data *Data) CasbinRuleRepo {
 			return entity.ID
 		},
 	)
-	return &casbinRuleRepo{
+	return &CasbinRuleRepo{
 		BaseRepo: base,
+		Data:     data,
 	}
 }

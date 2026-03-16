@@ -10,16 +10,13 @@ import (
 )
 
 // BaseAreaRepo 定义 BaseArea 的基础仓储能力。
-type BaseAreaRepo interface {
+type BaseAreaRepo struct {
 	baseRepo.BaseRepo[models.BaseArea]
-}
-
-type baseAreaRepo struct {
-	baseRepo.BaseRepo[models.BaseArea]
+	*Data
 }
 
 // NewBaseAreaRepo 创建 BaseArea 基础仓储实例。
-func NewBaseAreaRepo(data *Data) BaseAreaRepo {
+func NewBaseAreaRepo(data *Data) *BaseAreaRepo {
 	base := baseRepo.NewBaseRepo[models.BaseArea](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).BaseArea.WithContext(ctx).DO)
@@ -31,7 +28,8 @@ func NewBaseAreaRepo(data *Data) BaseAreaRepo {
 			return entity.ID
 		},
 	)
-	return &baseAreaRepo{
+	return &BaseAreaRepo{
 		BaseRepo: base,
+		Data:     data,
 	}
 }

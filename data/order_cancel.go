@@ -10,16 +10,13 @@ import (
 )
 
 // OrderCancelRepo 定义 OrderCancel 的基础仓储能力。
-type OrderCancelRepo interface {
+type OrderCancelRepo struct {
 	baseRepo.BaseRepo[models.OrderCancel]
-}
-
-type orderCancelRepo struct {
-	baseRepo.BaseRepo[models.OrderCancel]
+	*Data
 }
 
 // NewOrderCancelRepo 创建 OrderCancel 基础仓储实例。
-func NewOrderCancelRepo(data *Data) OrderCancelRepo {
+func NewOrderCancelRepo(data *Data) *OrderCancelRepo {
 	base := baseRepo.NewBaseRepo[models.OrderCancel](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).OrderCancel.WithContext(ctx).DO)
@@ -31,7 +28,8 @@ func NewOrderCancelRepo(data *Data) OrderCancelRepo {
 			return entity.ID
 		},
 	)
-	return &orderCancelRepo{
+	return &OrderCancelRepo{
 		BaseRepo: base,
+		Data:     data,
 	}
 }

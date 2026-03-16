@@ -10,16 +10,13 @@ import (
 )
 
 // GoodsPropRepo 定义 GoodsProp 的基础仓储能力。
-type GoodsPropRepo interface {
+type GoodsPropRepo struct {
 	baseRepo.BaseRepo[models.GoodsProp]
-}
-
-type goodsPropRepo struct {
-	baseRepo.BaseRepo[models.GoodsProp]
+	*Data
 }
 
 // NewGoodsPropRepo 创建 GoodsProp 基础仓储实例。
-func NewGoodsPropRepo(data *Data) GoodsPropRepo {
+func NewGoodsPropRepo(data *Data) *GoodsPropRepo {
 	base := baseRepo.NewBaseRepo[models.GoodsProp](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).GoodsProp.WithContext(ctx).DO)
@@ -31,7 +28,8 @@ func NewGoodsPropRepo(data *Data) GoodsPropRepo {
 			return entity.ID
 		},
 	)
-	return &goodsPropRepo{
+	return &GoodsPropRepo{
 		BaseRepo: base,
+		Data:     data,
 	}
 }

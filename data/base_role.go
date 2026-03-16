@@ -10,16 +10,13 @@ import (
 )
 
 // BaseRoleRepo 定义 BaseRole 的基础仓储能力。
-type BaseRoleRepo interface {
+type BaseRoleRepo struct {
 	baseRepo.BaseRepo[models.BaseRole]
-}
-
-type baseRoleRepo struct {
-	baseRepo.BaseRepo[models.BaseRole]
+	*Data
 }
 
 // NewBaseRoleRepo 创建 BaseRole 基础仓储实例。
-func NewBaseRoleRepo(data *Data) BaseRoleRepo {
+func NewBaseRoleRepo(data *Data) *BaseRoleRepo {
 	base := baseRepo.NewBaseRepo[models.BaseRole](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).BaseRole.WithContext(ctx).DO)
@@ -31,7 +28,8 @@ func NewBaseRoleRepo(data *Data) BaseRoleRepo {
 			return entity.ID
 		},
 	)
-	return &baseRoleRepo{
+	return &BaseRoleRepo{
 		BaseRepo: base,
+		Data:     data,
 	}
 }

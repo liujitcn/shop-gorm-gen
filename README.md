@@ -82,6 +82,7 @@ make tag MODULE=repo        # 从 repo 目录开始递归检查 go.mod 并打 ta
 - `query/*.gen.go`：查询构造与 DAO 代码
 - `query/gen.go`：查询入口
 - `data/*.go`：基础仓储代码
+- `data/*.go` 中的 Repo 默认生成为导出结构体，并内嵌通用 `BaseRepo` 与 `*Data`
 
 注意：请优先在 `config.yaml` 中填写你自己的数据库连接信息后再执行生成。
 

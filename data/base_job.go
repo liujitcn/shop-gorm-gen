@@ -10,16 +10,13 @@ import (
 )
 
 // BaseJobRepo 定义 BaseJob 的基础仓储能力。
-type BaseJobRepo interface {
+type BaseJobRepo struct {
 	baseRepo.BaseRepo[models.BaseJob]
-}
-
-type baseJobRepo struct {
-	baseRepo.BaseRepo[models.BaseJob]
+	*Data
 }
 
 // NewBaseJobRepo 创建 BaseJob 基础仓储实例。
-func NewBaseJobRepo(data *Data) BaseJobRepo {
+func NewBaseJobRepo(data *Data) *BaseJobRepo {
 	base := baseRepo.NewBaseRepo[models.BaseJob](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).BaseJob.WithContext(ctx).DO)
@@ -31,7 +28,8 @@ func NewBaseJobRepo(data *Data) BaseJobRepo {
 			return entity.ID
 		},
 	)
-	return &baseJobRepo{
+	return &BaseJobRepo{
 		BaseRepo: base,
+		Data:     data,
 	}
 }

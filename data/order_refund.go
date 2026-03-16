@@ -10,16 +10,13 @@ import (
 )
 
 // OrderRefundRepo 定义 OrderRefund 的基础仓储能力。
-type OrderRefundRepo interface {
+type OrderRefundRepo struct {
 	baseRepo.BaseRepo[models.OrderRefund]
-}
-
-type orderRefundRepo struct {
-	baseRepo.BaseRepo[models.OrderRefund]
+	*Data
 }
 
 // NewOrderRefundRepo 创建 OrderRefund 基础仓储实例。
-func NewOrderRefundRepo(data *Data) OrderRefundRepo {
+func NewOrderRefundRepo(data *Data) *OrderRefundRepo {
 	base := baseRepo.NewBaseRepo[models.OrderRefund](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).OrderRefund.WithContext(ctx).DO)
@@ -31,7 +28,8 @@ func NewOrderRefundRepo(data *Data) OrderRefundRepo {
 			return entity.ID
 		},
 	)
-	return &orderRefundRepo{
+	return &OrderRefundRepo{
 		BaseRepo: base,
+		Data:     data,
 	}
 }

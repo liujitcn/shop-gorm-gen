@@ -10,16 +10,13 @@ import (
 )
 
 // OrderPaymentRepo 定义 OrderPayment 的基础仓储能力。
-type OrderPaymentRepo interface {
+type OrderPaymentRepo struct {
 	baseRepo.BaseRepo[models.OrderPayment]
-}
-
-type orderPaymentRepo struct {
-	baseRepo.BaseRepo[models.OrderPayment]
+	*Data
 }
 
 // NewOrderPaymentRepo 创建 OrderPayment 基础仓储实例。
-func NewOrderPaymentRepo(data *Data) OrderPaymentRepo {
+func NewOrderPaymentRepo(data *Data) *OrderPaymentRepo {
 	base := baseRepo.NewBaseRepo[models.OrderPayment](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).OrderPayment.WithContext(ctx).DO)
@@ -31,7 +28,8 @@ func NewOrderPaymentRepo(data *Data) OrderPaymentRepo {
 			return entity.ID
 		},
 	)
-	return &orderPaymentRepo{
+	return &OrderPaymentRepo{
 		BaseRepo: base,
+		Data:     data,
 	}
 }

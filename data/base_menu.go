@@ -10,16 +10,13 @@ import (
 )
 
 // BaseMenuRepo 定义 BaseMenu 的基础仓储能力。
-type BaseMenuRepo interface {
+type BaseMenuRepo struct {
 	baseRepo.BaseRepo[models.BaseMenu]
-}
-
-type baseMenuRepo struct {
-	baseRepo.BaseRepo[models.BaseMenu]
+	*Data
 }
 
 // NewBaseMenuRepo 创建 BaseMenu 基础仓储实例。
-func NewBaseMenuRepo(data *Data) BaseMenuRepo {
+func NewBaseMenuRepo(data *Data) *BaseMenuRepo {
 	base := baseRepo.NewBaseRepo[models.BaseMenu](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).BaseMenu.WithContext(ctx).DO)
@@ -31,7 +28,8 @@ func NewBaseMenuRepo(data *Data) BaseMenuRepo {
 			return entity.ID
 		},
 	)
-	return &baseMenuRepo{
+	return &BaseMenuRepo{
 		BaseRepo: base,
+		Data:     data,
 	}
 }

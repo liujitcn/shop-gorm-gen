@@ -10,16 +10,13 @@ import (
 )
 
 // OrderRepo 定义 Order 的基础仓储能力。
-type OrderRepo interface {
+type OrderRepo struct {
 	baseRepo.BaseRepo[models.Order]
-}
-
-type orderRepo struct {
-	baseRepo.BaseRepo[models.Order]
+	*Data
 }
 
 // NewOrderRepo 创建 Order 基础仓储实例。
-func NewOrderRepo(data *Data) OrderRepo {
+func NewOrderRepo(data *Data) *OrderRepo {
 	base := baseRepo.NewBaseRepo[models.Order](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).Order.WithContext(ctx).DO)
@@ -31,7 +28,8 @@ func NewOrderRepo(data *Data) OrderRepo {
 			return entity.ID
 		},
 	)
-	return &orderRepo{
+	return &OrderRepo{
 		BaseRepo: base,
+		Data:     data,
 	}
 }

@@ -10,16 +10,13 @@ import (
 )
 
 // OrderLogisticsRepo 定义 OrderLogistics 的基础仓储能力。
-type OrderLogisticsRepo interface {
+type OrderLogisticsRepo struct {
 	baseRepo.BaseRepo[models.OrderLogistics]
-}
-
-type orderLogisticsRepo struct {
-	baseRepo.BaseRepo[models.OrderLogistics]
+	*Data
 }
 
 // NewOrderLogisticsRepo 创建 OrderLogistics 基础仓储实例。
-func NewOrderLogisticsRepo(data *Data) OrderLogisticsRepo {
+func NewOrderLogisticsRepo(data *Data) *OrderLogisticsRepo {
 	base := baseRepo.NewBaseRepo[models.OrderLogistics](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).OrderLogistics.WithContext(ctx).DO)
@@ -31,7 +28,8 @@ func NewOrderLogisticsRepo(data *Data) OrderLogisticsRepo {
 			return entity.ID
 		},
 	)
-	return &orderLogisticsRepo{
+	return &OrderLogisticsRepo{
 		BaseRepo: base,
+		Data:     data,
 	}
 }

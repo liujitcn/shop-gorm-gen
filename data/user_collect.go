@@ -10,16 +10,13 @@ import (
 )
 
 // UserCollectRepo 定义 UserCollect 的基础仓储能力。
-type UserCollectRepo interface {
+type UserCollectRepo struct {
 	baseRepo.BaseRepo[models.UserCollect]
-}
-
-type userCollectRepo struct {
-	baseRepo.BaseRepo[models.UserCollect]
+	*Data
 }
 
 // NewUserCollectRepo 创建 UserCollect 基础仓储实例。
-func NewUserCollectRepo(data *Data) UserCollectRepo {
+func NewUserCollectRepo(data *Data) *UserCollectRepo {
 	base := baseRepo.NewBaseRepo[models.UserCollect](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).UserCollect.WithContext(ctx).DO)
@@ -31,7 +28,8 @@ func NewUserCollectRepo(data *Data) UserCollectRepo {
 			return entity.ID
 		},
 	)
-	return &userCollectRepo{
+	return &UserCollectRepo{
 		BaseRepo: base,
+		Data:     data,
 	}
 }

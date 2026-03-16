@@ -10,16 +10,13 @@ import (
 )
 
 // BaseLogRepo 定义 BaseLog 的基础仓储能力。
-type BaseLogRepo interface {
+type BaseLogRepo struct {
 	baseRepo.BaseRepo[models.BaseLog]
-}
-
-type baseLogRepo struct {
-	baseRepo.BaseRepo[models.BaseLog]
+	*Data
 }
 
 // NewBaseLogRepo 创建 BaseLog 基础仓储实例。
-func NewBaseLogRepo(data *Data) BaseLogRepo {
+func NewBaseLogRepo(data *Data) *BaseLogRepo {
 	base := baseRepo.NewBaseRepo[models.BaseLog](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).BaseLog.WithContext(ctx).DO)
@@ -31,7 +28,8 @@ func NewBaseLogRepo(data *Data) BaseLogRepo {
 			return entity.ID
 		},
 	)
-	return &baseLogRepo{
+	return &BaseLogRepo{
 		BaseRepo: base,
+		Data:     data,
 	}
 }

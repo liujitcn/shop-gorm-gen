@@ -10,16 +10,13 @@ import (
 )
 
 // ShopBannerRepo 定义 ShopBanner 的基础仓储能力。
-type ShopBannerRepo interface {
+type ShopBannerRepo struct {
 	baseRepo.BaseRepo[models.ShopBanner]
-}
-
-type shopBannerRepo struct {
-	baseRepo.BaseRepo[models.ShopBanner]
+	*Data
 }
 
 // NewShopBannerRepo 创建 ShopBanner 基础仓储实例。
-func NewShopBannerRepo(data *Data) ShopBannerRepo {
+func NewShopBannerRepo(data *Data) *ShopBannerRepo {
 	base := baseRepo.NewBaseRepo[models.ShopBanner](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).ShopBanner.WithContext(ctx).DO)
@@ -31,7 +28,8 @@ func NewShopBannerRepo(data *Data) ShopBannerRepo {
 			return entity.ID
 		},
 	)
-	return &shopBannerRepo{
+	return &ShopBannerRepo{
 		BaseRepo: base,
+		Data:     data,
 	}
 }

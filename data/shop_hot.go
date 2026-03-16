@@ -10,16 +10,13 @@ import (
 )
 
 // ShopHotRepo 定义 ShopHot 的基础仓储能力。
-type ShopHotRepo interface {
+type ShopHotRepo struct {
 	baseRepo.BaseRepo[models.ShopHot]
-}
-
-type shopHotRepo struct {
-	baseRepo.BaseRepo[models.ShopHot]
+	*Data
 }
 
 // NewShopHotRepo 创建 ShopHot 基础仓储实例。
-func NewShopHotRepo(data *Data) ShopHotRepo {
+func NewShopHotRepo(data *Data) *ShopHotRepo {
 	base := baseRepo.NewBaseRepo[models.ShopHot](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).ShopHot.WithContext(ctx).DO)
@@ -31,7 +28,8 @@ func NewShopHotRepo(data *Data) ShopHotRepo {
 			return entity.ID
 		},
 	)
-	return &shopHotRepo{
+	return &ShopHotRepo{
 		BaseRepo: base,
+		Data:     data,
 	}
 }

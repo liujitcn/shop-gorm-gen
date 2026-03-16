@@ -10,16 +10,13 @@ import (
 )
 
 // BaseDictRepo 定义 BaseDict 的基础仓储能力。
-type BaseDictRepo interface {
+type BaseDictRepo struct {
 	baseRepo.BaseRepo[models.BaseDict]
-}
-
-type baseDictRepo struct {
-	baseRepo.BaseRepo[models.BaseDict]
+	*Data
 }
 
 // NewBaseDictRepo 创建 BaseDict 基础仓储实例。
-func NewBaseDictRepo(data *Data) BaseDictRepo {
+func NewBaseDictRepo(data *Data) *BaseDictRepo {
 	base := baseRepo.NewBaseRepo[models.BaseDict](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).BaseDict.WithContext(ctx).DO)
@@ -31,7 +28,8 @@ func NewBaseDictRepo(data *Data) BaseDictRepo {
 			return entity.ID
 		},
 	)
-	return &baseDictRepo{
+	return &BaseDictRepo{
 		BaseRepo: base,
+		Data:     data,
 	}
 }

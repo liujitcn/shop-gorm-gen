@@ -10,16 +10,13 @@ import (
 )
 
 // BaseApiRepo 定义 BaseAPI 的基础仓储能力。
-type BaseApiRepo interface {
+type BaseApiRepo struct {
 	baseRepo.BaseRepo[models.BaseAPI]
-}
-
-type baseApiRepo struct {
-	baseRepo.BaseRepo[models.BaseAPI]
+	*Data
 }
 
 // NewBaseApiRepo 创建 BaseAPI 基础仓储实例。
-func NewBaseApiRepo(data *Data) BaseApiRepo {
+func NewBaseApiRepo(data *Data) *BaseApiRepo {
 	base := baseRepo.NewBaseRepo[models.BaseAPI](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).BaseAPI.WithContext(ctx).DO)
@@ -31,7 +28,8 @@ func NewBaseApiRepo(data *Data) BaseApiRepo {
 			return entity.ID
 		},
 	)
-	return &baseApiRepo{
+	return &BaseApiRepo{
 		BaseRepo: base,
+		Data:     data,
 	}
 }

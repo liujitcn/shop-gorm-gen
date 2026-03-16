@@ -10,16 +10,13 @@ import (
 )
 
 // ShopServiceRepo 定义 ShopService 的基础仓储能力。
-type ShopServiceRepo interface {
+type ShopServiceRepo struct {
 	baseRepo.BaseRepo[models.ShopService]
-}
-
-type shopServiceRepo struct {
-	baseRepo.BaseRepo[models.ShopService]
+	*Data
 }
 
 // NewShopServiceRepo 创建 ShopService 基础仓储实例。
-func NewShopServiceRepo(data *Data) ShopServiceRepo {
+func NewShopServiceRepo(data *Data) *ShopServiceRepo {
 	base := baseRepo.NewBaseRepo[models.ShopService](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).ShopService.WithContext(ctx).DO)
@@ -31,7 +28,8 @@ func NewShopServiceRepo(data *Data) ShopServiceRepo {
 			return entity.ID
 		},
 	)
-	return &shopServiceRepo{
+	return &ShopServiceRepo{
 		BaseRepo: base,
+		Data:     data,
 	}
 }

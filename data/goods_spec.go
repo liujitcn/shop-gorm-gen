@@ -10,16 +10,13 @@ import (
 )
 
 // GoodsSpecRepo 定义 GoodsSpec 的基础仓储能力。
-type GoodsSpecRepo interface {
+type GoodsSpecRepo struct {
 	baseRepo.BaseRepo[models.GoodsSpec]
-}
-
-type goodsSpecRepo struct {
-	baseRepo.BaseRepo[models.GoodsSpec]
+	*Data
 }
 
 // NewGoodsSpecRepo 创建 GoodsSpec 基础仓储实例。
-func NewGoodsSpecRepo(data *Data) GoodsSpecRepo {
+func NewGoodsSpecRepo(data *Data) *GoodsSpecRepo {
 	base := baseRepo.NewBaseRepo[models.GoodsSpec](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).GoodsSpec.WithContext(ctx).DO)
@@ -31,7 +28,8 @@ func NewGoodsSpecRepo(data *Data) GoodsSpecRepo {
 			return entity.ID
 		},
 	)
-	return &goodsSpecRepo{
+	return &GoodsSpecRepo{
 		BaseRepo: base,
+		Data:     data,
 	}
 }

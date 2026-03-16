@@ -10,16 +10,13 @@ import (
 )
 
 // UserCartRepo 定义 UserCart 的基础仓储能力。
-type UserCartRepo interface {
+type UserCartRepo struct {
 	baseRepo.BaseRepo[models.UserCart]
-}
-
-type userCartRepo struct {
-	baseRepo.BaseRepo[models.UserCart]
+	*Data
 }
 
 // NewUserCartRepo 创建 UserCart 基础仓储实例。
-func NewUserCartRepo(data *Data) UserCartRepo {
+func NewUserCartRepo(data *Data) *UserCartRepo {
 	base := baseRepo.NewBaseRepo[models.UserCart](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).UserCart.WithContext(ctx).DO)
@@ -31,7 +28,8 @@ func NewUserCartRepo(data *Data) UserCartRepo {
 			return entity.ID
 		},
 	)
-	return &userCartRepo{
+	return &UserCartRepo{
 		BaseRepo: base,
+		Data:     data,
 	}
 }

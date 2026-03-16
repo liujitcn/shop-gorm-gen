@@ -10,16 +10,13 @@ import (
 )
 
 // UserStoreRepo 定义 UserStore 的基础仓储能力。
-type UserStoreRepo interface {
+type UserStoreRepo struct {
 	baseRepo.BaseRepo[models.UserStore]
-}
-
-type userStoreRepo struct {
-	baseRepo.BaseRepo[models.UserStore]
+	*Data
 }
 
 // NewUserStoreRepo 创建 UserStore 基础仓储实例。
-func NewUserStoreRepo(data *Data) UserStoreRepo {
+func NewUserStoreRepo(data *Data) *UserStoreRepo {
 	base := baseRepo.NewBaseRepo[models.UserStore](
 		func(ctx context.Context) gen.Dao {
 			return new(data.Query(ctx).UserStore.WithContext(ctx).DO)
@@ -31,7 +28,8 @@ func NewUserStoreRepo(data *Data) UserStoreRepo {
 			return entity.ID
 		},
 	)
-	return &userStoreRepo{
+	return &UserStoreRepo{
 		BaseRepo: base,
+		Data:     data,
 	}
 }
