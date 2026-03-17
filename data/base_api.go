@@ -9,22 +9,22 @@ import (
 	"gorm.io/gen/field"
 )
 
-// BaseApiRepo 定义 BaseAPI 的基础仓储能力。
+// BaseApiRepo 定义 BaseApi 的基础仓储能力。
 type BaseApiRepo struct {
-	baseRepo.BaseRepo[models.BaseAPI]
+	baseRepo.BaseRepo[models.BaseApi]
 	*Data
 }
 
-// NewBaseApiRepo 创建 BaseAPI 基础仓储实例。
+// NewBaseApiRepo 创建 BaseApi 基础仓储实例。
 func NewBaseApiRepo(data *Data) *BaseApiRepo {
-	base := baseRepo.NewBaseRepo[models.BaseAPI](
+	base := baseRepo.NewBaseRepo[models.BaseApi](
 		func(ctx context.Context) gen.Dao {
-			return new(data.Query(ctx).BaseAPI.WithContext(ctx).DO)
+			return new(data.Query(ctx).BaseApi.WithContext(ctx).DO)
 		},
 		func(ctx context.Context) field.Int64 {
-			return data.Query(ctx).BaseAPI.ID
+			return data.Query(ctx).BaseApi.ID
 		},
-		func(entity *models.BaseAPI) int64 {
+		func(entity *models.BaseApi) int64 {
 			return entity.ID
 		},
 	)

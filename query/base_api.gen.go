@@ -19,31 +19,31 @@ import (
 	"github.com/liujitcn/shop-gorm-gen/models"
 )
 
-func newBaseAPI(db *gorm.DB, opts ...gen.DOOption) baseAPI {
-	_baseAPI := baseAPI{}
+func newBaseApi(db *gorm.DB, opts ...gen.DOOption) baseApi {
+	_baseApi := baseApi{}
 
-	_baseAPI.baseAPIDo.UseDB(db, opts...)
-	_baseAPI.baseAPIDo.UseModel(&models.BaseAPI{})
+	_baseApi.baseApiDo.UseDB(db, opts...)
+	_baseApi.baseApiDo.UseModel(&models.BaseApi{})
 
-	tableName := _baseAPI.baseAPIDo.TableName()
-	_baseAPI.ALL = field.NewAsterisk(tableName)
-	_baseAPI.ID = field.NewInt64(tableName, "id")
-	_baseAPI.ServiceName = field.NewString(tableName, "service_name")
-	_baseAPI.ServiceDesc = field.NewString(tableName, "service_desc")
-	_baseAPI.Desc = field.NewString(tableName, "desc")
-	_baseAPI.Operation = field.NewString(tableName, "operation")
-	_baseAPI.Method = field.NewString(tableName, "method")
-	_baseAPI.Path = field.NewString(tableName, "path")
-	_baseAPI.DeletedAt = field.NewField(tableName, "deleted_at")
+	tableName := _baseApi.baseApiDo.TableName()
+	_baseApi.ALL = field.NewAsterisk(tableName)
+	_baseApi.ID = field.NewInt64(tableName, "id")
+	_baseApi.ServiceName = field.NewString(tableName, "service_name")
+	_baseApi.ServiceDesc = field.NewString(tableName, "service_desc")
+	_baseApi.Desc = field.NewString(tableName, "desc")
+	_baseApi.Operation = field.NewString(tableName, "operation")
+	_baseApi.Method = field.NewString(tableName, "method")
+	_baseApi.Path = field.NewString(tableName, "path")
+	_baseApi.DeletedAt = field.NewField(tableName, "deleted_at")
 
-	_baseAPI.fillFieldMap()
+	_baseApi.fillFieldMap()
 
-	return _baseAPI
+	return _baseApi
 }
 
-// baseAPI API信息
-type baseAPI struct {
-	baseAPIDo baseAPIDo
+// baseApi API信息
+type baseApi struct {
+	baseApiDo baseApiDo
 
 	ALL         field.Asterisk
 	ID          field.Int64  // API ID
@@ -58,17 +58,17 @@ type baseAPI struct {
 	fieldMap map[string]field.Expr
 }
 
-func (b baseAPI) Table(newTableName string) *baseAPI {
-	b.baseAPIDo.UseTable(newTableName)
+func (b baseApi) Table(newTableName string) *baseApi {
+	b.baseApiDo.UseTable(newTableName)
 	return b.updateTableName(newTableName)
 }
 
-func (b baseAPI) As(alias string) *baseAPI {
-	b.baseAPIDo.DO = *(b.baseAPIDo.As(alias).(*gen.DO))
+func (b baseApi) As(alias string) *baseApi {
+	b.baseApiDo.DO = *(b.baseApiDo.As(alias).(*gen.DO))
 	return b.updateTableName(alias)
 }
 
-func (b *baseAPI) updateTableName(table string) *baseAPI {
+func (b *baseApi) updateTableName(table string) *baseApi {
 	b.ALL = field.NewAsterisk(table)
 	b.ID = field.NewInt64(table, "id")
 	b.ServiceName = field.NewString(table, "service_name")
@@ -84,15 +84,15 @@ func (b *baseAPI) updateTableName(table string) *baseAPI {
 	return b
 }
 
-func (b *baseAPI) WithContext(ctx context.Context) *baseAPIDo { return b.baseAPIDo.WithContext(ctx) }
+func (b *baseApi) WithContext(ctx context.Context) *baseApiDo { return b.baseApiDo.WithContext(ctx) }
 
-func (b baseAPI) TableName() string { return b.baseAPIDo.TableName() }
+func (b baseApi) TableName() string { return b.baseApiDo.TableName() }
 
-func (b baseAPI) Alias() string { return b.baseAPIDo.Alias() }
+func (b baseApi) Alias() string { return b.baseApiDo.Alias() }
 
-func (b baseAPI) Columns(cols ...field.Expr) gen.Columns { return b.baseAPIDo.Columns(cols...) }
+func (b baseApi) Columns(cols ...field.Expr) gen.Columns { return b.baseApiDo.Columns(cols...) }
 
-func (b *baseAPI) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
+func (b *baseApi) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := b.fieldMap[fieldName]
 	if !ok || _f == nil {
 		return nil, false
@@ -101,7 +101,7 @@ func (b *baseAPI) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	return _oe, ok
 }
 
-func (b *baseAPI) fillFieldMap() {
+func (b *baseApi) fillFieldMap() {
 	b.fieldMap = make(map[string]field.Expr, 8)
 	b.fieldMap["id"] = b.ID
 	b.fieldMap["service_name"] = b.ServiceName
@@ -113,161 +113,161 @@ func (b *baseAPI) fillFieldMap() {
 	b.fieldMap["deleted_at"] = b.DeletedAt
 }
 
-func (b baseAPI) clone(db *gorm.DB) baseAPI {
-	b.baseAPIDo.ReplaceConnPool(db.Statement.ConnPool)
+func (b baseApi) clone(db *gorm.DB) baseApi {
+	b.baseApiDo.ReplaceConnPool(db.Statement.ConnPool)
 	return b
 }
 
-func (b baseAPI) replaceDB(db *gorm.DB) baseAPI {
-	b.baseAPIDo.ReplaceDB(db)
+func (b baseApi) replaceDB(db *gorm.DB) baseApi {
+	b.baseApiDo.ReplaceDB(db)
 	return b
 }
 
-type baseAPIDo struct{ gen.DO }
+type baseApiDo struct{ gen.DO }
 
-func (b baseAPIDo) Debug() *baseAPIDo {
+func (b baseApiDo) Debug() *baseApiDo {
 	return b.withDO(b.DO.Debug())
 }
 
-func (b baseAPIDo) WithContext(ctx context.Context) *baseAPIDo {
+func (b baseApiDo) WithContext(ctx context.Context) *baseApiDo {
 	return b.withDO(b.DO.WithContext(ctx))
 }
 
-func (b baseAPIDo) ReadDB() *baseAPIDo {
+func (b baseApiDo) ReadDB() *baseApiDo {
 	return b.Clauses(dbresolver.Read)
 }
 
-func (b baseAPIDo) WriteDB() *baseAPIDo {
+func (b baseApiDo) WriteDB() *baseApiDo {
 	return b.Clauses(dbresolver.Write)
 }
 
-func (b baseAPIDo) Session(config *gorm.Session) *baseAPIDo {
+func (b baseApiDo) Session(config *gorm.Session) *baseApiDo {
 	return b.withDO(b.DO.Session(config))
 }
 
-func (b baseAPIDo) Clauses(conds ...clause.Expression) *baseAPIDo {
+func (b baseApiDo) Clauses(conds ...clause.Expression) *baseApiDo {
 	return b.withDO(b.DO.Clauses(conds...))
 }
 
-func (b baseAPIDo) Returning(value interface{}, columns ...string) *baseAPIDo {
+func (b baseApiDo) Returning(value interface{}, columns ...string) *baseApiDo {
 	return b.withDO(b.DO.Returning(value, columns...))
 }
 
-func (b baseAPIDo) Not(conds ...gen.Condition) *baseAPIDo {
+func (b baseApiDo) Not(conds ...gen.Condition) *baseApiDo {
 	return b.withDO(b.DO.Not(conds...))
 }
 
-func (b baseAPIDo) Or(conds ...gen.Condition) *baseAPIDo {
+func (b baseApiDo) Or(conds ...gen.Condition) *baseApiDo {
 	return b.withDO(b.DO.Or(conds...))
 }
 
-func (b baseAPIDo) Select(conds ...field.Expr) *baseAPIDo {
+func (b baseApiDo) Select(conds ...field.Expr) *baseApiDo {
 	return b.withDO(b.DO.Select(conds...))
 }
 
-func (b baseAPIDo) Where(conds ...gen.Condition) *baseAPIDo {
+func (b baseApiDo) Where(conds ...gen.Condition) *baseApiDo {
 	return b.withDO(b.DO.Where(conds...))
 }
 
-func (b baseAPIDo) Order(conds ...field.Expr) *baseAPIDo {
+func (b baseApiDo) Order(conds ...field.Expr) *baseApiDo {
 	return b.withDO(b.DO.Order(conds...))
 }
 
-func (b baseAPIDo) Distinct(cols ...field.Expr) *baseAPIDo {
+func (b baseApiDo) Distinct(cols ...field.Expr) *baseApiDo {
 	return b.withDO(b.DO.Distinct(cols...))
 }
 
-func (b baseAPIDo) Omit(cols ...field.Expr) *baseAPIDo {
+func (b baseApiDo) Omit(cols ...field.Expr) *baseApiDo {
 	return b.withDO(b.DO.Omit(cols...))
 }
 
-func (b baseAPIDo) Join(table schema.Tabler, on ...field.Expr) *baseAPIDo {
+func (b baseApiDo) Join(table schema.Tabler, on ...field.Expr) *baseApiDo {
 	return b.withDO(b.DO.Join(table, on...))
 }
 
-func (b baseAPIDo) LeftJoin(table schema.Tabler, on ...field.Expr) *baseAPIDo {
+func (b baseApiDo) LeftJoin(table schema.Tabler, on ...field.Expr) *baseApiDo {
 	return b.withDO(b.DO.LeftJoin(table, on...))
 }
 
-func (b baseAPIDo) RightJoin(table schema.Tabler, on ...field.Expr) *baseAPIDo {
+func (b baseApiDo) RightJoin(table schema.Tabler, on ...field.Expr) *baseApiDo {
 	return b.withDO(b.DO.RightJoin(table, on...))
 }
 
-func (b baseAPIDo) Group(cols ...field.Expr) *baseAPIDo {
+func (b baseApiDo) Group(cols ...field.Expr) *baseApiDo {
 	return b.withDO(b.DO.Group(cols...))
 }
 
-func (b baseAPIDo) Having(conds ...gen.Condition) *baseAPIDo {
+func (b baseApiDo) Having(conds ...gen.Condition) *baseApiDo {
 	return b.withDO(b.DO.Having(conds...))
 }
 
-func (b baseAPIDo) Limit(limit int) *baseAPIDo {
+func (b baseApiDo) Limit(limit int) *baseApiDo {
 	return b.withDO(b.DO.Limit(limit))
 }
 
-func (b baseAPIDo) Offset(offset int) *baseAPIDo {
+func (b baseApiDo) Offset(offset int) *baseApiDo {
 	return b.withDO(b.DO.Offset(offset))
 }
 
-func (b baseAPIDo) Scopes(funcs ...func(gen.Dao) gen.Dao) *baseAPIDo {
+func (b baseApiDo) Scopes(funcs ...func(gen.Dao) gen.Dao) *baseApiDo {
 	return b.withDO(b.DO.Scopes(funcs...))
 }
 
-func (b baseAPIDo) Unscoped() *baseAPIDo {
+func (b baseApiDo) Unscoped() *baseApiDo {
 	return b.withDO(b.DO.Unscoped())
 }
 
-func (b baseAPIDo) Create(values ...*models.BaseAPI) error {
+func (b baseApiDo) Create(values ...*models.BaseApi) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return b.DO.Create(values)
 }
 
-func (b baseAPIDo) CreateInBatches(values []*models.BaseAPI, batchSize int) error {
+func (b baseApiDo) CreateInBatches(values []*models.BaseApi, batchSize int) error {
 	return b.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (b baseAPIDo) Save(values ...*models.BaseAPI) error {
+func (b baseApiDo) Save(values ...*models.BaseApi) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return b.DO.Save(values)
 }
 
-func (b baseAPIDo) First() (*models.BaseAPI, error) {
+func (b baseApiDo) First() (*models.BaseApi, error) {
 	if result, err := b.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.BaseAPI), nil
+		return result.(*models.BaseApi), nil
 	}
 }
 
-func (b baseAPIDo) Take() (*models.BaseAPI, error) {
+func (b baseApiDo) Take() (*models.BaseApi, error) {
 	if result, err := b.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.BaseAPI), nil
+		return result.(*models.BaseApi), nil
 	}
 }
 
-func (b baseAPIDo) Last() (*models.BaseAPI, error) {
+func (b baseApiDo) Last() (*models.BaseApi, error) {
 	if result, err := b.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.BaseAPI), nil
+		return result.(*models.BaseApi), nil
 	}
 }
 
-func (b baseAPIDo) Find() ([]*models.BaseAPI, error) {
+func (b baseApiDo) Find() ([]*models.BaseApi, error) {
 	result, err := b.DO.Find()
-	return result.([]*models.BaseAPI), err
+	return result.([]*models.BaseApi), err
 }
 
-func (b baseAPIDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*models.BaseAPI, err error) {
-	buf := make([]*models.BaseAPI, 0, batchSize)
+func (b baseApiDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*models.BaseApi, err error) {
+	buf := make([]*models.BaseApi, 0, batchSize)
 	err = b.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -275,49 +275,49 @@ func (b baseAPIDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) err
 	return results, err
 }
 
-func (b baseAPIDo) FindInBatches(result *[]*models.BaseAPI, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (b baseApiDo) FindInBatches(result *[]*models.BaseApi, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return b.DO.FindInBatches(result, batchSize, fc)
 }
 
-func (b baseAPIDo) Attrs(attrs ...field.AssignExpr) *baseAPIDo {
+func (b baseApiDo) Attrs(attrs ...field.AssignExpr) *baseApiDo {
 	return b.withDO(b.DO.Attrs(attrs...))
 }
 
-func (b baseAPIDo) Assign(attrs ...field.AssignExpr) *baseAPIDo {
+func (b baseApiDo) Assign(attrs ...field.AssignExpr) *baseApiDo {
 	return b.withDO(b.DO.Assign(attrs...))
 }
 
-func (b baseAPIDo) Joins(fields ...field.RelationField) *baseAPIDo {
+func (b baseApiDo) Joins(fields ...field.RelationField) *baseApiDo {
 	for _, _f := range fields {
 		b = *b.withDO(b.DO.Joins(_f))
 	}
 	return &b
 }
 
-func (b baseAPIDo) Preload(fields ...field.RelationField) *baseAPIDo {
+func (b baseApiDo) Preload(fields ...field.RelationField) *baseApiDo {
 	for _, _f := range fields {
 		b = *b.withDO(b.DO.Preload(_f))
 	}
 	return &b
 }
 
-func (b baseAPIDo) FirstOrInit() (*models.BaseAPI, error) {
+func (b baseApiDo) FirstOrInit() (*models.BaseApi, error) {
 	if result, err := b.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.BaseAPI), nil
+		return result.(*models.BaseApi), nil
 	}
 }
 
-func (b baseAPIDo) FirstOrCreate() (*models.BaseAPI, error) {
+func (b baseApiDo) FirstOrCreate() (*models.BaseApi, error) {
 	if result, err := b.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.BaseAPI), nil
+		return result.(*models.BaseApi), nil
 	}
 }
 
-func (b baseAPIDo) FindByPage(offset int, limit int) (result []*models.BaseAPI, count int64, err error) {
+func (b baseApiDo) FindByPage(offset int, limit int) (result []*models.BaseApi, count int64, err error) {
 	result, err = b.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -332,7 +332,7 @@ func (b baseAPIDo) FindByPage(offset int, limit int) (result []*models.BaseAPI, 
 	return
 }
 
-func (b baseAPIDo) ScanByPage(result interface{}, offset int, limit int) (count int64, err error) {
+func (b baseApiDo) ScanByPage(result interface{}, offset int, limit int) (count int64, err error) {
 	count, err = b.Count()
 	if err != nil {
 		return
@@ -342,15 +342,15 @@ func (b baseAPIDo) ScanByPage(result interface{}, offset int, limit int) (count 
 	return
 }
 
-func (b baseAPIDo) Scan(result interface{}) (err error) {
+func (b baseApiDo) Scan(result interface{}) (err error) {
 	return b.DO.Scan(result)
 }
 
-func (b baseAPIDo) Delete(models ...*models.BaseAPI) (result gen.ResultInfo, err error) {
+func (b baseApiDo) Delete(models ...*models.BaseApi) (result gen.ResultInfo, err error) {
 	return b.DO.Delete(models)
 }
 
-func (b *baseAPIDo) withDO(do gen.Dao) *baseAPIDo {
+func (b *baseApiDo) withDO(do gen.Dao) *baseApiDo {
 	b.DO = *do.(*gen.DO)
 	return b
 }

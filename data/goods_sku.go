@@ -9,22 +9,22 @@ import (
 	"gorm.io/gen/field"
 )
 
-// GoodsSkuRepo 定义 GoodsSKU 的基础仓储能力。
+// GoodsSkuRepo 定义 GoodsSku 的基础仓储能力。
 type GoodsSkuRepo struct {
-	baseRepo.BaseRepo[models.GoodsSKU]
+	baseRepo.BaseRepo[models.GoodsSku]
 	*Data
 }
 
-// NewGoodsSkuRepo 创建 GoodsSKU 基础仓储实例。
+// NewGoodsSkuRepo 创建 GoodsSku 基础仓储实例。
 func NewGoodsSkuRepo(data *Data) *GoodsSkuRepo {
-	base := baseRepo.NewBaseRepo[models.GoodsSKU](
+	base := baseRepo.NewBaseRepo[models.GoodsSku](
 		func(ctx context.Context) gen.Dao {
-			return new(data.Query(ctx).GoodsSKU.WithContext(ctx).DO)
+			return new(data.Query(ctx).GoodsSku.WithContext(ctx).DO)
 		},
 		func(ctx context.Context) field.Int64 {
-			return data.Query(ctx).GoodsSKU.ID
+			return data.Query(ctx).GoodsSku.ID
 		},
-		func(entity *models.GoodsSKU) int64 {
+		func(entity *models.GoodsSku) int64 {
 			return entity.ID
 		},
 	)

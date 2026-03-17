@@ -8,10 +8,10 @@ import (
 	"gorm.io/gorm"
 )
 
-const TableNameBaseAPI = "base_api"
+const TableNameBaseApi = "base_api"
 
-// BaseAPI API信息
-type BaseAPI struct {
+// BaseApi API信息
+type BaseApi struct {
 	ID          int64          `gorm:"column:id;type:bigint;primaryKey;autoIncrement:true;comment:API ID" json:"id"` // API ID
 	ServiceName string         `gorm:"column:service_name;type:varchar(50);comment:服务名" json:"service_name"`         // 服务名
 	ServiceDesc string         `gorm:"column:service_desc;type:varchar(50);comment:服务描述" json:"service_desc"`        // 服务描述
@@ -22,7 +22,7 @@ type BaseAPI struct {
 	DeletedAt   gorm.DeletedAt `gorm:"column:deleted_at;type:datetime;comment:删除时间" json:"deleted_at"`               // 删除时间
 }
 
-// TableName BaseAPI's table name
-func (*BaseAPI) TableName() string {
-	return TableNameBaseAPI
+// TableName BaseApi's table name
+func (*BaseApi) TableName() string {
+	return TableNameBaseApi
 }

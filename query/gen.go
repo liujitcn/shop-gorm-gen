@@ -18,7 +18,7 @@ import (
 func Use(db *gorm.DB, opts ...gen.DOOption) *Query {
 	return &Query{
 		db:             db,
-		BaseAPI:        newBaseAPI(db, opts...),
+		BaseApi:        newBaseApi(db, opts...),
 		BaseArea:       newBaseArea(db, opts...),
 		BaseConfig:     newBaseConfig(db, opts...),
 		BaseDept:       newBaseDept(db, opts...),
@@ -34,7 +34,7 @@ func Use(db *gorm.DB, opts ...gen.DOOption) *Query {
 		Goods:          newGoods(db, opts...),
 		GoodsCategory:  newGoodsCategory(db, opts...),
 		GoodsProp:      newGoodsProp(db, opts...),
-		GoodsSKU:       newGoodsSKU(db, opts...),
+		GoodsSku:       newGoodsSku(db, opts...),
 		GoodsSpec:      newGoodsSpec(db, opts...),
 		Order:          newOrder(db, opts...),
 		OrderAddress:   newOrderAddress(db, opts...),
@@ -59,7 +59,7 @@ func Use(db *gorm.DB, opts ...gen.DOOption) *Query {
 type Query struct {
 	db *gorm.DB
 
-	BaseAPI        baseAPI
+	BaseApi        baseApi
 	BaseArea       baseArea
 	BaseConfig     baseConfig
 	BaseDept       baseDept
@@ -75,7 +75,7 @@ type Query struct {
 	Goods          goods
 	GoodsCategory  goodsCategory
 	GoodsProp      goodsProp
-	GoodsSKU       goodsSKU
+	GoodsSku       goodsSku
 	GoodsSpec      goodsSpec
 	Order          order
 	OrderAddress   orderAddress
@@ -101,7 +101,7 @@ func (q *Query) Available() bool { return q.db != nil }
 func (q *Query) clone(db *gorm.DB) *Query {
 	return &Query{
 		db:             db,
-		BaseAPI:        q.BaseAPI.clone(db),
+		BaseApi:        q.BaseApi.clone(db),
 		BaseArea:       q.BaseArea.clone(db),
 		BaseConfig:     q.BaseConfig.clone(db),
 		BaseDept:       q.BaseDept.clone(db),
@@ -117,7 +117,7 @@ func (q *Query) clone(db *gorm.DB) *Query {
 		Goods:          q.Goods.clone(db),
 		GoodsCategory:  q.GoodsCategory.clone(db),
 		GoodsProp:      q.GoodsProp.clone(db),
-		GoodsSKU:       q.GoodsSKU.clone(db),
+		GoodsSku:       q.GoodsSku.clone(db),
 		GoodsSpec:      q.GoodsSpec.clone(db),
 		Order:          q.Order.clone(db),
 		OrderAddress:   q.OrderAddress.clone(db),
@@ -150,7 +150,7 @@ func (q *Query) WriteDB() *Query {
 func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 	return &Query{
 		db:             db,
-		BaseAPI:        q.BaseAPI.replaceDB(db),
+		BaseApi:        q.BaseApi.replaceDB(db),
 		BaseArea:       q.BaseArea.replaceDB(db),
 		BaseConfig:     q.BaseConfig.replaceDB(db),
 		BaseDept:       q.BaseDept.replaceDB(db),
@@ -166,7 +166,7 @@ func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 		Goods:          q.Goods.replaceDB(db),
 		GoodsCategory:  q.GoodsCategory.replaceDB(db),
 		GoodsProp:      q.GoodsProp.replaceDB(db),
-		GoodsSKU:       q.GoodsSKU.replaceDB(db),
+		GoodsSku:       q.GoodsSku.replaceDB(db),
 		GoodsSpec:      q.GoodsSpec.replaceDB(db),
 		Order:          q.Order.replaceDB(db),
 		OrderAddress:   q.OrderAddress.replaceDB(db),
@@ -189,7 +189,7 @@ func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 }
 
 type queryCtx struct {
-	BaseAPI        *baseAPIDo
+	BaseApi        *baseApiDo
 	BaseArea       *baseAreaDo
 	BaseConfig     *baseConfigDo
 	BaseDept       *baseDeptDo
@@ -205,7 +205,7 @@ type queryCtx struct {
 	Goods          *goodsDo
 	GoodsCategory  *goodsCategoryDo
 	GoodsProp      *goodsPropDo
-	GoodsSKU       *goodsSKUDo
+	GoodsSku       *goodsSkuDo
 	GoodsSpec      *goodsSpecDo
 	Order          *orderDo
 	OrderAddress   *orderAddressDo
@@ -228,7 +228,7 @@ type queryCtx struct {
 
 func (q *Query) WithContext(ctx context.Context) *queryCtx {
 	return &queryCtx{
-		BaseAPI:        q.BaseAPI.WithContext(ctx),
+		BaseApi:        q.BaseApi.WithContext(ctx),
 		BaseArea:       q.BaseArea.WithContext(ctx),
 		BaseConfig:     q.BaseConfig.WithContext(ctx),
 		BaseDept:       q.BaseDept.WithContext(ctx),
@@ -244,7 +244,7 @@ func (q *Query) WithContext(ctx context.Context) *queryCtx {
 		Goods:          q.Goods.WithContext(ctx),
 		GoodsCategory:  q.GoodsCategory.WithContext(ctx),
 		GoodsProp:      q.GoodsProp.WithContext(ctx),
-		GoodsSKU:       q.GoodsSKU.WithContext(ctx),
+		GoodsSku:       q.GoodsSku.WithContext(ctx),
 		GoodsSpec:      q.GoodsSpec.WithContext(ctx),
 		Order:          q.Order.WithContext(ctx),
 		OrderAddress:   q.OrderAddress.WithContext(ctx),

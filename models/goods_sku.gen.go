@@ -8,10 +8,10 @@ import (
 	"gorm.io/gorm"
 )
 
-const TableNameGoodsSKU = "goods_sku"
+const TableNameGoodsSku = "goods_sku"
 
-// GoodsSKU 商品SKU信息
-type GoodsSKU struct {
+// GoodsSku 商品SKU信息
+type GoodsSku struct {
 	ID            int64          `gorm:"column:id;type:bigint;primaryKey;autoIncrement:true;comment:商品SKUID" json:"id"`                          // 商品SKUID
 	GoodsID       int64          `gorm:"column:goods_id;type:bigint;comment:商品ID" json:"goods_id"`                                               // 商品ID
 	Picture       string         `gorm:"column:picture;type:varchar(1024);comment:SKU图片" json:"picture"`                                         // SKU图片
@@ -25,7 +25,7 @@ type GoodsSKU struct {
 	DeletedAt     gorm.DeletedAt `gorm:"column:deleted_at;type:datetime;comment:删除时间" json:"deleted_at"`                                         // 删除时间
 }
 
-// TableName GoodsSKU's table name
-func (*GoodsSKU) TableName() string {
-	return TableNameGoodsSKU
+// TableName GoodsSku's table name
+func (*GoodsSku) TableName() string {
+	return TableNameGoodsSku
 }

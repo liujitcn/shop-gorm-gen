@@ -4,19 +4,19 @@ out_path: query
 model_pkg_path: models
 data_path: data
 acronyms:
-  api: API
-  id: ID
-  ip: IP
-  url: URL
-  uri: URI
-  http: HTTP
-  https: HTTPS
-  tcp: TCP
-  udp: UDP
-  rpc: RPC
-  sql: SQL
-  db: DB
-  uid: UID
-  uuid: UUID
-  sku: SKU
-  sn: SN
+#  api: API
+#  id: ID
+#  ip: IP
+#  url: URL
+#  uri: URI
+#  http: HTTP
+#  https: HTTPS
+#  tcp: TCP
+#  udp: UDP
+#  rpc: RPC
+#  sql: SQL
+#  db: DB
+#  uid: UID
+#  uuid: UUID
+#  sku: SKU
+#  sn: SN

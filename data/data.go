@@ -10,7 +10,7 @@ import (
 
 func init() {
 	databaseGorm.RegisterMigrateModels(
-		new(models.BaseAPI),
+		new(models.BaseApi),
 		new(models.BaseArea),
 		new(models.BaseConfig),
 		new(models.BaseDept),
@@ -26,7 +26,7 @@ func init() {
 		new(models.Goods),
 		new(models.GoodsCategory),
 		new(models.GoodsProp),
-		new(models.GoodsSKU),
+		new(models.GoodsSku),
 		new(models.GoodsSpec),
 		new(models.Order),
 		new(models.OrderAddress),
