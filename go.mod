@@ -4,7 +4,7 @@ go 1.26.0
 
 require (
 	github.com/google/wire v0.7.0
-	github.com/liujitcn/gorm-kit v0.0.16
+	github.com/liujitcn/gorm-kit v0.0.18
 	github.com/liujitcn/kratos-kit/database/gorm v0.0.7
 	gorm.io/gen v0.3.27
 	gorm.io/gorm v1.31.1
