@@ -5,7 +5,7 @@ go 1.26.0
 require (
 	github.com/google/wire v0.7.0
 	github.com/liujitcn/gorm-kit v0.0.20
-	github.com/liujitcn/kratos-kit/database/gorm v0.0.7
+	github.com/liujitcn/kratos-kit/database/gorm v0.0.8
 	gorm.io/gen v0.3.27
 	gorm.io/gorm v1.31.1
 	gorm.io/plugin/dbresolver v1.6.2
@@ -39,15 +39,15 @@ require (
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/klauspost/compress v1.17.8 // indirect
 	github.com/liujitcn/go-utils v0.0.1 // indirect
-	github.com/liujitcn/kratos-kit/api v0.0.8 // indirect
-	github.com/liujitcn/kratos-kit/auth v0.0.2 // indirect
-	github.com/liujitcn/kratos-kit/auth/authn v0.0.4 // indirect
-	github.com/liujitcn/kratos-kit/auth/authn/middleware v0.0.4 // indirect
-	github.com/liujitcn/kratos-kit/auth/authz v0.0.4 // indirect
-	github.com/liujitcn/kratos-kit/auth/authz/middleware v0.0.4 // indirect
-	github.com/liujitcn/kratos-kit/cache v0.0.4 // indirect
-	github.com/liujitcn/kratos-kit/database/gorm/driver v0.0.6 // indirect
-	github.com/liujitcn/kratos-kit/utils v0.0.4 // indirect
+	github.com/liujitcn/kratos-kit/api v0.0.9 // indirect
+	github.com/liujitcn/kratos-kit/auth v0.0.5 // indirect
+	github.com/liujitcn/kratos-kit/auth/authn v0.0.5 // indirect
+	github.com/liujitcn/kratos-kit/auth/authn/middleware v0.0.5 // indirect
+	github.com/liujitcn/kratos-kit/auth/authz v0.0.5 // indirect
+	github.com/liujitcn/kratos-kit/auth/authz/middleware v0.0.5 // indirect
+	github.com/liujitcn/kratos-kit/cache v0.0.5 // indirect
+	github.com/liujitcn/kratos-kit/database/gorm/driver v0.0.7 // indirect
+	github.com/liujitcn/kratos-kit/utils v0.0.5 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.4 // indirect
 	github.com/paulmach/orb v0.11.1 // indirect
 	github.com/pierrec/lz4/v4 v4.1.21 // indirect
